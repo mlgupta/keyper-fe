@@ -13,22 +13,30 @@ export const userStore = {
         }
     },
     actions: {
-        getUsers({ commit }) {
+        getUsers({ dispatch, commit }) {
             commit('getUsers');
 
             userService.getUsers()
                 .then(
                     users => commit('getUsersSuccess', users),
-                    error => commit('getUsersFailure', error)
+                    error => {
+                        commit('getUsersFailure', error)
+                        dispatch('alert/danger', "Error getting User List", { root: true });
+                    }
                 );
         },
-        updateUser({ commit }, { user }) {
+        updateUser({ dispatch, commit }, { user }) {
             Vue.$log.debug("In updateUser: " + JSON.stringify(user));
             userService.updateUser(user)
                 .then(
-                    upd_user => commit('updateUserSuccess', upd_user),
-                    error => commit('updateUserFailure', error)
-
+                    upd_user => {
+                        commit('updateUserSuccess', upd_user);
+                        dispatch('alert/success', "User Saved", { root: true });
+                    },
+                    error => {
+                        commit('updateUserFailure', error)
+                        dispatch('alert/danger', "Update User Error", { root: true });
+                    }
                 );
         },
         deleteUser({ dispatch, commit }, { userDel }) {
@@ -62,7 +70,11 @@ export const userStore = {
 
                 );
         },
+        resetState({ commit }) {
+            commit('resetUsers');
+        },
     },
+
     mutations: {
         getUsers(state) {
             Vue.$log.debug("getUsers Enter")
@@ -110,6 +122,9 @@ export const userStore = {
         createUserFailure(state, error) {
             Vue.$log.error("Enter")
         },
- 
+        resetUsers(state) {
+            Vue.$log.debug("Enter")
+            state.all = [];
+        },
     }
 }

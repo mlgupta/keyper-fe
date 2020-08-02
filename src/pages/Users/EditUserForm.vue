@@ -85,6 +85,31 @@ export default {
       confirmPassword: null
     };
   },
+  computed: {
+    alert() {
+      return this.$store.state.alert;
+    },
+    alertMsg() {
+      return this.$store.state.alert.message;
+    },
+  },
+  watch: {
+    alertMsg(newAlert) {
+      Vue.$log.debug("Enter");
+      Vue.$log.debug("Alert Type: " + this.alert.type);
+
+      if (this.alert.type == null) {
+        Vue.$log.debug("Nothing in alert");
+      }
+      else {
+        this.notifyVue(this.alert.type, this.alert.message);
+        this.$store.dispatch('alert/clear');
+      }
+    }
+  },
+  created () {
+    this.$store.dispatch('alert/clear');
+  },
   methods: {
     handleChange(e, id) {
       Vue.$log.debug("event: " + e);
@@ -101,7 +126,18 @@ export default {
       else {
         this.$emit('update-user', this.changes);
       }
-    }
+    },
+    notifyVue(type, msg) {
+      Vue.$log.debug("Enter");
+
+      this.$notify({
+        message:
+          msg,
+        horizontalAlign: 'center',
+        verticalAlign: 'top',
+        type: type
+      });
+    } 
   }
 };
 </script>

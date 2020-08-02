@@ -2,16 +2,15 @@ import Vue from "vue";
 import { authHeader } from './auth_header';
 import axios from "axios";
 
-export const userService = {
-    getUsers,
-    createUser,
-    updateUser,
-    deleteUser,
-    createUser
+export const hostService = {
+    getHosts,
+    createHost,
+    updateHost,
+    deleteHost
 };
 
 
-function getUsers() {
+function getHosts() {
     Vue.$log.debug("Enter");
 
     const config = {
@@ -20,13 +19,13 @@ function getUsers() {
     
     Vue.$log.debug("Header: " + JSON.stringify(config));
 
-    return axios.get(process.env.VUE_APP_API_URL + '/users', config)
+    return axios.get(process.env.VUE_APP_API_URL + '/hosts', config)
         .then(response => {
-            const users = response.data;
-            return users;
+            const hosts = response.data;
+            return hosts;
         })
         .catch(err => {
-            Vue.$log.error("getUsers Failure: ");
+            Vue.$log.error("getHosts Failure: ");
 
             var error = '';
 
@@ -47,22 +46,22 @@ function getUsers() {
         });
 }
 
-function updateUser(user) {
+function updateHost(host) {
     Vue.$log.debug("Enter")
-    Vue.$log.debug("user changes" + JSON.stringify(user));
+    Vue.$log.debug("host changes" + JSON.stringify(host));
 
     const config = {
         headers: authHeader()
     }
 
-    return axios.put(process.env.VUE_APP_API_URL + '/users/' + user.id, user.changes, config)
+    return axios.put(process.env.VUE_APP_API_URL + '/hosts/' + host.id, host.changes, config)
         .then(response => {
             Vue.$log.debug(response);
-            const user = response.data;
-            return user;
+            const host = response.data;
+            return host;
         })
         .catch(err => {
-            Vue.$log.error("updateUser Failure: ");
+            Vue.$log.error("updateHost Failure: ");
 
             var error = '';
 
@@ -83,22 +82,22 @@ function updateUser(user) {
         });
 }
 
-function deleteUser(user) {
+function deleteHost(host) {
     Vue.$log.debug("Enter")
-    Vue.$log.debug("user changes" + user);
+    Vue.$log.debug("host changes" + host);
 
     const config = {
         headers: authHeader()
     }
 
-    return axios.delete(process.env.VUE_APP_API_URL + '/users/' + user, config)
+    return axios.delete(process.env.VUE_APP_API_URL + '/hosts/' + host, config)
         .then(response => {
             Vue.$log.debug(response);
-            const user = response.data;
-            return user;
+            const host = response.data;
+            return host;
         })
         .catch(err => {
-            Vue.$log.error("deleteUser Failure: ");
+            Vue.$log.error("deleteHost Failure: ");
 
             var error = '';
 
@@ -119,22 +118,22 @@ function deleteUser(user) {
         });
 }
 
-function createUser(user) {
+function createHost(host) {
     Vue.$log.debug("Enter")
-    Vue.$log.debug("user: " + JSON.stringify(user));
+    Vue.$log.debug("host: " + JSON.stringify(user));
 
     const config = {
         headers: authHeader()
     }
 
-    return axios.post(process.env.VUE_APP_API_URL + '/users', user, config)
+    return axios.post(process.env.VUE_APP_API_URL + '/hosts', host, config)
         .then(response => {
             Vue.$log.debug(response);
-            const user = response.data;
-            return user;
+            const host = response.data;
+            return host;
         })
         .catch(err => {
-            Vue.$log.error("createUser Failure: ");
+            Vue.$log.error("createHost Failure: ");
 
             var error = '';
 
