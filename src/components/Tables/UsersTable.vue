@@ -11,8 +11,14 @@
     </md-table>
     </div>
     <div class="md-layout-item md-size-100 text-right">
+      <md-dialog-confirm
+        :md-active.sync="active"
+        md-content="Are you Sure?"
+        md-confirm-text="Yes"
+        md-cancel-text="No"
+        @md-confirm="del" />
       <md-button class="md-raised md-success" @click="add">Add</md-button>
-      <md-button class="md-raised md-success" @click="del">Delete</md-button>
+      <md-button class="md-raised md-success" @click="active = true">Delete</md-button>
     </div>
   </div>
 </template>
@@ -33,7 +39,8 @@ export default {
   },
   data() {
     return {
-      selected: []
+      selected: [],
+      active: false
     };
   },
   computed: {
