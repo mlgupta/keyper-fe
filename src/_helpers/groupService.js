@@ -3,14 +3,14 @@ import { authHeader } from './auth_header';
 import axios from "axios";
 
 export const groupService = {
-    getgroups,
-    creategroup,
-    updategroup,
-    deletegroup
+    getGroups,
+    createGroup,
+    updateGroup,
+    deleteGroup
 };
 
 
-function getgroups() {
+function getGroups() {
     Vue.$log.debug("Enter");
 
     const config = {
@@ -35,7 +35,7 @@ function getgroups() {
             }
             else if (err.request) {
                 Vue.$log.error("err.request: " + err.request);
-                error = err.request
+                error = err.request;
             }
             else {
                 Vue.$log.error("err.message: " + err.message);
@@ -46,7 +46,7 @@ function getgroups() {
         });
 }
 
-function updategroup(group) {
+function updateGroup(group) {
     Vue.$log.debug("Enter")
     Vue.$log.debug("group changes" + JSON.stringify(group));
 
@@ -71,7 +71,7 @@ function updategroup(group) {
             }
             else if (err.request) {
                 Vue.$log.error("err.request: " + err.request);
-                error = err.request
+                error = err.request;
             }
             else {
                 Vue.$log.error("err.message: " + err.message);
@@ -82,7 +82,7 @@ function updategroup(group) {
         });
 }
 
-function deletegroup(group) {
+function deleteGroup(group) {
     Vue.$log.debug("Enter")
     Vue.$log.debug("group changes" + group);
 
@@ -118,8 +118,8 @@ function deletegroup(group) {
         });
 }
 
-function creategroup(group) {
-    Vue.$log.debug("Enter")
+function createGroup(group) {
+    Vue.$log.debug("Enter");
     Vue.$log.debug("group: " + JSON.stringify(user));
 
     const config = {
@@ -143,7 +143,7 @@ function creategroup(group) {
             }
             else if (err.request) {
                 Vue.$log.error("err.request: " + err.request);
-                error = err.request
+                error = err.request;
             }
             else {
                 Vue.$log.error("err.message: " + err.message);

@@ -9,7 +9,7 @@ export const userStore = {
     getters: {
         getUserById: (state) => (id) => {
             Vue.$log.debug("In getUserbyID: " + id);
-            return state.all.find(user => user.cn === id)
+            return state.all.find(user => user.cn === id);
         }
     },
     actions: {

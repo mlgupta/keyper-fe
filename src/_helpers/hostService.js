@@ -15,7 +15,7 @@ function getHosts() {
 
     const config = {
         headers: authHeader()
-    }
+    };
     
     Vue.$log.debug("Header: " + JSON.stringify(config));
 
