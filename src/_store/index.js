@@ -15,7 +15,8 @@ export const store = new Vuex.Store({
         alert,
         authentication,
         userStore,
-        groupStore
+        groupStore,
+        hostStore
     },
     plugins: [createPersistedState()]
 });
