@@ -2,7 +2,7 @@
   <div class="content">
     <div class="md-layout">
       <div class="md-layout-item md-medium-size-100 md-size-66">
-        <form>
+        <form novalidate @submit.prevent="authenticate">
           <md-card>
             <md-card-header :data-background-color="dataBackgroundColor">
               <h4 class="title">Login</h4>
@@ -11,17 +11,21 @@
             <md-card-content>
               <div class="md-layout">
                 <div class="md-layout-item md-small-size-100">
-                  <md-field class="md-form-group">
+                  <md-field class="md-form-group" :class="getValidationClass('username')">
                     <md-icon>face</md-icon>
                     <label>User Name</label>
-                    <md-input v-model="username" type="text"></md-input>
+                    <md-input v-model="form.username" type="text" autocomplete="username" :disabled="sending"></md-input>
+                    <span class="md-error" v-if="!$v.form.username.required">Username is required</span>
+                    <span class="md-error" v-else-if="!$v.form.username.minlength">Invalid Username</span>
                   </md-field>
-                  <md-field class="md-form-group">
+                  <md-field class="md-form-group" :class="getValidationClass('password')">
                     <md-icon>lock_outline</md-icon>
                     <label>Password</label>
-                    <md-input v-model="password" type="password"></md-input>
+                    <md-input v-model="form.password" type="password" autocomplete="password" :disabled="sending"></md-input>
+                    <span class="md-error" v-if="!$v.form.password.required">Password is required</span>
+                    <span class="md-error" v-else-if="!$v.form.password.minlength">Invalid Password</span>
                   </md-field>
-                  <md-button @click="authenticate" class="md-raised md-success">Login</md-button>
+                  <md-button type="submit" class="md-raised md-success" :disabled="sending">Login</md-button>
                 </div>
               </div>
             </md-card-content>
@@ -35,9 +39,12 @@
 <script>
 import axios from 'axios';
 import Vue from "vue";
+import { validationMixin } from 'vuelidate';
+import { required, minLength, maxLength } from 'vuelidate/lib/validators';
 
 export default {
   name: "login-form",
+  mixins: [validationMixin],
   props: {
     dataBackgroundColor: {
       type: String,
@@ -46,10 +53,25 @@ export default {
   },
   data() {
     return {
-      username: null,
-      password: null,
-      loggedIn: false
+      form: {
+        username: null,
+        password: null
+      },
+      loggedIn: false,
+      sending: false
     };
+  },
+  validations: {
+    form: {
+      username: {
+        required,
+        minLength: minLength(3)
+      },
+      password: {
+        required,
+        minLength: minLength(3)
+      }
+    }
   },
   computed: {
     loggingIn() {
@@ -57,10 +79,10 @@ export default {
     },
     missingUserName: function() {
       Vue.$log.debug("Enter");
-      return this.username == null;
+      return this.form.username == null;
     },
     missingPassword: function() {
-      return this.password == null;
+      return this.form.password == null;
     },
     alert() {
       return this.$store.state.alert;
@@ -88,12 +110,26 @@ export default {
     this.$store.dispatch('alert/clear');
   },
   methods: {
+    getValidationClass (fieldName) {
+      Vue.$log.debug("Enter");
+      Vue.$log.debug("fieldName: " + fieldName);
+
+      const field = this.$v.form[fieldName];
+      Vue.$log.debug("field: " + JSON.stringify(field));
+      Vue.$log.debug("md-invalid: " + field.$invalid && field.$dirty);
+
+      if (field) {
+        return {
+          'md-invalid': field.$invalid && field.$dirty
+        }
+      }
+    },
     authenticate() {
       Vue.$log.debug("Enter");
 
-      const { username, password } = this;
+      const { username, password } = this.form;
       const { dispatch } = this.$store;
-
+/*
       if (this.missingUserName) {
         Vue.$log.debug("Missing Username");
         this.notifyVue('warning', 'Username is required');
@@ -101,8 +137,11 @@ export default {
       if (this.missingPassword) {
         this.notifyVue('warning', 'Password is required');
       }
+*/
+      this.$v.$touch();
 
-      if (username && password) {
+      if (!this.$v.$invalid) {
+        this.sending = true;
         dispatch('authentication/login', { username, password });
       }
     },
