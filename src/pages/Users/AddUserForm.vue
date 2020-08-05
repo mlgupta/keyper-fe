@@ -106,8 +106,7 @@ export default {
       },
       mail: {
         required,
-        minLength: minLength(3),
-        email
+        minLength: minLength(3)
       },
       userPassword: {
         required,
