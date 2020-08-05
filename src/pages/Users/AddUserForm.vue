@@ -1,5 +1,5 @@
 <template>
-  <form>
+  <form novalidate @submit.prevent="add">
     <md-card>
       <md-card-header :data-background-color="dataBackgroundColor">
         <h4 class="title">Add User</h4>
@@ -9,45 +9,51 @@
       <md-card-content>
         <div class="md-layout">
           <div class="md-layout-item md-small-size-100 md-size-50">
-            <md-field>
+            <md-field :class="getValidationClass('cn')">
               <label>User Name</label>
-              <md-input v-model="user.cn"></md-input>
+              <md-input v-model="user.cn" :disabled="sending"></md-input>
+              <span class="md-error" v-if="!$v.user.cn.required">Username is required</span>
+              <span class="md-error" v-else-if="!$v.user.cn.minlength">Invalid Username</span>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
-            <md-field>
+            <md-field :class="getValidationClass('cn')">
               <label>Email Address</label>
-              <md-input  v-model="user.mail" type="email"></md-input>
+              <md-input  v-model="user.mail" type="email" :disabled="sending"></md-input>
+              <span class="md-error" v-if="!$v.user.mail.required">Email is required</span>
+              <span class="md-error" v-else-if="!$v.user.mail.minlength">Invalid Email</span>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
             <md-field>
               <label>First Name</label>
-              <md-input v-model="user.givenName" type="text"></md-input>
+              <md-input v-model="user.givenName" type="text" :disabled="sending"></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
             <md-field>
               <label>Last Name</label>
-              <md-input v-model="user.sn" type="text"></md-input>
+              <md-input v-model="user.sn" type="text" :disabled="sending"></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-100">
             <md-field>
               <label>Display name</label>
-              <md-input v-model="user.displayName" type="text"></md-input>
+              <md-input v-model="user.displayName" type="text" :disabled="sending"></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
-            <md-field>
+            <md-field :class="getValidationClass('cn')">
               <label>Password</label>
-              <md-input v-model="user.userPassword" type="password"></md-input>
+              <md-input v-model="user.userPassword" type="password" :disabled="sending"></md-input>
+              <span class="md-error" v-if="!$v.user.password.required">Username is required</span>
+              <span class="md-error" v-else-if="!$v.user.password.minlength">Invalid Username</span>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
             <md-field>
               <label>Confirm Password</label>
-              <md-input v-model="confirmPassword" type="password"></md-input>
+              <md-input v-model="confirmPassword" type="password" :disabled="sending"></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-size-100">
@@ -57,7 +63,7 @@
             </md-field>
           </div>
           <div class="md-layout-item md-size-100 text-right">
-            <md-button class="md-raised md-success" @click="add">Add</md-button>
+            <md-button type="submit" class="md-raised md-success" :disabled="sending">Add</md-button>
           </div>
         </div>
       </md-card-content>
@@ -66,9 +72,12 @@
 </template>
 <script>
 import Vue from "vue";
+import { validationMixin } from 'vuelidate';
+import { required, minLength, maxLength } from 'vuelidate/lib/validators';
 
 export default {
   name: "add-user-form",
+  mixins: [validationMixin],
   props: {
     dataBackgroundColor: {
       type: String,
@@ -85,8 +94,26 @@ export default {
         sn: null,
         displayName: null,
         userPassword: null
-      }
+      },
+      sending: false
     };
+  },
+  validations: {
+    user: {
+      cn: {
+        required,
+        minLength: minLength(3)
+      },
+      mail: {
+        required,
+        minLength: minLength(3),
+        email
+      },
+      userPassword: {
+        required,
+        minLength: minLength(3)
+      },
+    }
   },
   computed: {
     alert() {
@@ -123,13 +150,27 @@ export default {
     this.$store.dispatch('alert/clear');
   },
   methods: {
+      getValidationClass (fieldName) {
+      Vue.$log.debug("Enter");
+      Vue.$log.debug("fieldName: " + fieldName);
+
+      const field = this.$v.user[fieldName];
+      Vue.$log.debug("field: " + JSON.stringify(field));
+      Vue.$log.debug("md-invalid: " + field.$invalid && field.$dirty);
+
+      if (field) {
+        return {
+          'md-invalid': field.$invalid && field.$dirty
+        }
+      }
+    },
     add() {
       Vue.$log.debug("Enter");
 
-      if (JSON.stringify(this.user) == JSON.stringify({})) {
-        Vue.$log.debug("Empty user. Ignore click");
-      }
-      else {
+      this.$v.$touch();
+
+      if (!this.$v.$invalid) {
+        this.sending = true;
         this.$emit('add-user', this.user);
       }
     },

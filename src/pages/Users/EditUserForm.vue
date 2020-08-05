@@ -66,9 +66,13 @@
 </template>
 <script>
 import Vue from "vue";
+import { validationMixin } from 'vuelidate';
+import { required, minLength, maxLength } from 'vuelidate/lib/validators';
+
 
 export default {
   name: "edit-user-form",
+  mixins: [validationMixin],
   props: {
     dataBackgroundColor: {
       type: String,
@@ -141,4 +145,3 @@ export default {
   }
 };
 </script>
-<style></style>

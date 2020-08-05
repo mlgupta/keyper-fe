@@ -37,7 +37,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import Vue from "vue";
 import { validationMixin } from 'vuelidate';
 import { required, minLength, maxLength } from 'vuelidate/lib/validators';
