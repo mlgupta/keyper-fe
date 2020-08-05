@@ -12,6 +12,7 @@ import Users from "@/pages/Users.vue";
 import AddUser from "@/pages/AddUser.vue";
 import User from "@/pages/User.vue";
 import Hosts from "@/pages/Hosts.vue";
+import AddHost from "@/pages/AddHost.vue";
 import Groups from "@/pages/Groups.vue";
 
 
@@ -63,6 +64,11 @@ const routes = [
         path: "hosts",
         name: "Hosts",
         component: Hosts
+      },
+      {
+        path: "addhost",
+        name: "AddHost",
+        component: AddHost
       },
       {
         path: "groups",

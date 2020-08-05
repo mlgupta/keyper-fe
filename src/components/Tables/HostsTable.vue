@@ -1,25 +1,46 @@
 <template>
-  <div>
+  <div>   
     <div>
-    <md-table v-model="hosts" :table-header-color="tableHeaderColor" @md-selected="onSelect" md-sort="cn" md-sort-order="asc" md-card> 
+    <md-table v-model="hosts" :table-header-color="tableHeaderColor" @md-selected="onSelect" md-sort="cn" md-sort-order="asc" md-card md-fixed-header> 
+      <md-table-toolbar>
+        <div class="md-layout-item md-size-100 text-right">   
+          <md-button class="md-raised md-success" @click="add"><md-icon>add</md-icon>Add</md-button>
+        </div>        
+      </md-table-toolbar>
+      <md-table-toolbar slot="md-table-alternate-header" slot-scope="{ count }" class="md-danger">
+        <div class="md-toolbar-section-start">{{ getAlternateLabel(count) }}</div>
+        <div class="md-toolbar-section-end">
+          <md-dialog-confirm
+            :md-active.sync="active"
+            md-content="Are you sure, you want to delete the selected host(s)?"
+            md-confirm-text="Yes"
+            md-cancel-text="No"
+            @md-confirm="del" />
+          <md-button class="md-raised md-danger" @click="active = true"><md-icon>delete</md-icon>Delete</md-button>
+        </div>
+      </md-table-toolbar>
+
       <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
         <md-table-cell md-label="Name" md-sort-by="cn"><router-link :to="{ path: item.cn }" append>{{ item.cn }}</router-link></md-table-cell>            
-        <md-table-cell md-label="Members">{{ item.owners }}</md-table-cell>
+        <md-table-cell md-label="Owners">
+          <v-clamp autoresize :max-lines="1"> {{ item.owners }} </v-clamp> 
+        </md-table-cell>        
       </md-table-row>
     </md-table>
     </div>
-    <div class="md-layout-item md-size-100 text-right">
-      <md-button class="md-raised md-success" @click="add">Add</md-button>
-      <md-button class="md-raised md-success" @click="del">Delete</md-button>
-    </div>
+    
   </div>
 </template>
 
 <script>
 import Vue from "vue";
+import VClamp from 'vue-clamp'
 
 export default {
   name: "hosts-table",
+  components: {
+    VClamp
+  },
   props: {
     tableHeaderColor: {
       type: String,
@@ -31,7 +52,8 @@ export default {
   },
   data() {
     return {
-      selected: []
+      selected: [],
+      active: false
     };
   },
   computed: {
@@ -59,25 +81,31 @@ export default {
   created () {
     this.$store.dispatch('alert/clear');
   },
-  methods: {
+  methods: {    
     onSelect (items) {
       this.selected = []
       items.forEach(element => {
       this.selected.push(element.cn);
       });
     },
+    getAlternateLabel (count) {
+      let plural = ''
+      if (count > 1) {
+        plural = 's'
+      }
+      return `${count} host${plural} selected`
+    },
     add () {
       Vue.$log.debug("Enter");
-
       this.$router.push({name: 'AddHost'});
     },
     del () {
       Vue.$log.debug("Enter");
-
       if (JSON.stringify(this.selected) == JSON.stringify([])) {
         Vue.$log.debug("No changes. Ignore click");
       }
       else {
+        Vue.$log.debug(this.selected)
         this.$emit('delete-host', this.selected);
       }
     },
@@ -95,3 +123,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  .md-table + .md-table {
+    margin-top: 16px
+  }
+</style>

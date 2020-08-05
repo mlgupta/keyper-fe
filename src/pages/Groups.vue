@@ -8,7 +8,7 @@
             <!-- <p class="category">Here is a subtitle for this table</p> -->
           </md-card-header>
           <md-card-content>
-            <groups-table table-header-color="green" :groups="groups"></groups-table>
+            <groups-table table-header-color="green" :groups="groups" v-on:delete-group="deleteGroup"></groups-table>
           </md-card-content>
         </md-card>
       </div>      

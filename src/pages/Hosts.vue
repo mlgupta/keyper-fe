@@ -4,11 +4,12 @@
       <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
         <md-card>
           <md-card-header data-background-color="green">
-            <h4 class="title">Hosts</h4>
-            <!-- <p class="category">Here is a subtitle for this table</p> -->
+            <md-card-header-text> 
+              <h4 class="title">Hosts</h4>
+            </md-card-header-text>            
           </md-card-header>
           <md-card-content>
-            <hosts-table table-header-color="green" :hosts="hosts"></hosts-table>
+            <hosts-table table-header-color="green" :hosts="hosts" v-on:delete-host="deleteHost"></hosts-table>
           </md-card-content>
         </md-card>
       </div>      
@@ -49,7 +50,7 @@ export default {
   },
   methods: {
     deleteHost(hostList) {
-      Vue.$log.debug("Enter");
+      Vue.$log.debug("Enter delete host");
       Vue.$log.debug("hostList: " + JSON.stringify(hostList));
 
       hostList.forEach(element => {
