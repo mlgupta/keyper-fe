@@ -17,7 +17,7 @@
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
-            <md-field :class="getValidationClass('cn')">
+            <md-field :class="getValidationClass('mail')">
               <label>Email Address</label>
               <md-input  v-model="user.mail" type="email" :disabled="sending"></md-input>
               <span class="md-error" v-if="!$v.user.mail.required">Email is required</span>
@@ -43,17 +43,19 @@
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
-            <md-field :class="getValidationClass('cn')">
+            <md-field :class="getValidationClass('userPassword')">
               <label>Password</label>
               <md-input v-model="user.userPassword" type="password" :disabled="sending"></md-input>
-              <span class="md-error" v-if="!$v.user.password.required">Username is required</span>
-              <span class="md-error" v-else-if="!$v.user.password.minlength">Invalid Username</span>
+              <span class="md-error" v-if="!$v.user.userPassword.required">Username is required</span>
+              <span class="md-error" v-else-if="!$v.user.userPassword.minlength">Invalid Username</span>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
-            <md-field>
+            <md-field :class="getValidationClass('confirmPassword')">
               <label>Confirm Password</label>
-              <md-input v-model="confirmPassword" type="password" :disabled="sending"></md-input>
+              <md-input v-model="user.confirmPassword" type="password" :disabled="sending"></md-input>
+              <span class="md-error" v-if="!$v.user.confirmPassword.required">Confirm Password is required</span>
+              <span class="md-error" v-else-if="!$v.user.confirmPassword.sameAs">Passwords must be same</span>
             </md-field>
           </div>
           <div class="md-layout-item md-size-100">
@@ -73,7 +75,7 @@
 <script>
 import Vue from "vue";
 import { validationMixin } from 'vuelidate';
-import { required, minLength, maxLength } from 'vuelidate/lib/validators';
+import { required, minLength, maxLength, email, sameAs } from 'vuelidate/lib/validators';
 
 export default {
   name: "add-user-form",
@@ -93,7 +95,8 @@ export default {
         givenName: null,
         sn: null,
         displayName: null,
-        userPassword: null
+        userPassword: null,
+        confirmPassword: null
       },
       sending: false
     };
@@ -106,13 +109,19 @@ export default {
       },
       mail: {
         required,
+        email,
         minLength: minLength(3)
       },
       userPassword: {
         required,
         minLength: minLength(3)
       },
-    }
+      confirmPassword: {
+        required,
+        minLength: minLength(3),
+        sameAsPassword: sameAs('userPassword')
+      }
+    },
   },
   computed: {
     alert() {
@@ -168,7 +177,10 @@ export default {
 
       this.$v.$touch();
 
-      if (!this.$v.$invalid) {
+      if (this.$v.$invalid) {
+        Vue.$log.debug("Validation Errors");
+      }
+      else {
         this.sending = true;
         this.$emit('add-user', this.user);
       }
