@@ -14,7 +14,7 @@ import User from "@/pages/User.vue";
 import Hosts from "@/pages/Hosts.vue";
 import AddHost from "@/pages/AddHost.vue";
 import Groups from "@/pages/Groups.vue";
-
+import AddGroup from "@/pages/AddGroup.vue";
 
 const routes = [
   {
@@ -74,6 +74,11 @@ const routes = [
         path: "groups",
         name: "Groups",
         component: Groups
+      },
+      {
+        path: "addgroup",
+        name: "AddGroup",
+        component: AddGroup
       }
     ]
   }
