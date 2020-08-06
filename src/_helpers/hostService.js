@@ -119,8 +119,8 @@ function deleteHost(host) {
 }
 
 function createHost(host) {
-    Vue.$log.debug("Enter")
-    Vue.$log.debug("host: " + JSON.stringify(user));
+    Vue.$log.debug("Enter");
+    Vue.$log.debug("host: " + JSON.stringify(host));
 
     const config = {
         headers: authHeader()

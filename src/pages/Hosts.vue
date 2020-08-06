@@ -36,8 +36,13 @@ export default {
       hosts_json.forEach(element => {
         var host = {};
         host.cn = element.cn;        
-        host.owners = element.owners.map(val => val.split(',')[0].split('=')[1]);
-        host.owners = host.owners.join(', ')
+        if ("owners" in element) {
+          host.owners = element.owners.map(val => val.split(',')[0].split('=')[1]);
+          host.owners = host.owners.join(', ')
+        }else {
+          host.owners = ''
+        }      
+        
         hosts_arr.push(host);
       });
       Vue.$log.debug(hosts_arr)

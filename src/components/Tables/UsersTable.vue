@@ -4,7 +4,7 @@
     <md-table v-model="users" :table-header-color="tableHeaderColor" @md-selected="onSelect" md-sort="cn" md-sort-order="asc" md-card> 
       <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
         <md-table-cell md-label="User Name" md-sort-by="cn"><router-link :to="{ path: item.cn }" append>{{ item.cn }}</router-link></md-table-cell>
-        <md-table-cell md-label="email" md-sort-by="mail">{{ item.mail }}</md-table-cell>
+        <md-table-cell md-label="Email" md-sort-by="mail">{{ item.mail }}</md-table-cell>
         <md-table-cell md-label="First Name" md-sort-by="givenName">{{ item.givenName }}</md-table-cell>
         <md-table-cell md-label="Last Name" md-sort-by="sn">{{ item.sn }}</md-table-cell>
       </md-table-row>
