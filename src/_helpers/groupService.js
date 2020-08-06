@@ -120,7 +120,7 @@ function deleteGroup(group) {
 
 function createGroup(group) {
     Vue.$log.debug("Enter");
-    Vue.$log.debug("group: " + JSON.stringify(user));
+    Vue.$log.debug("group: " + JSON.stringify(group));
 
     const config = {
         headers: authHeader()

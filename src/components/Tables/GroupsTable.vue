@@ -88,8 +88,7 @@ export default {
       return `${count} group${plural} selected`
     },
     add () {
-      Vue.$log.debug("Enter");
-
+      Vue.$log.debug("Enter");      
       this.$router.push({name: 'AddGroup'});
     },
     del () {

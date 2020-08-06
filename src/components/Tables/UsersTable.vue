@@ -2,23 +2,31 @@
   <div>
     <div>
     <md-table v-model="users" :table-header-color="tableHeaderColor" @md-selected="onSelect" md-sort="cn" md-sort-order="asc" md-card> 
+      <md-table-toolbar>
+        <div class="md-layout-item md-size-100 text-right">   
+          <md-button class="md-raised md-success" @click="add"><md-icon>add</md-icon>Add</md-button>
+        </div>        
+      </md-table-toolbar>
+      <md-table-toolbar slot="md-table-alternate-header" slot-scope="{ count }" class="md-danger">
+        <div class="md-toolbar-section-start">{{ getAlternateLabel(count) }}</div>
+        <div class="md-toolbar-section-end">
+          <md-dialog-confirm
+            :md-active.sync="active"
+            md-content="Are you sure, you want to delete the selected user(s)?"
+            md-confirm-text="Yes"
+            md-cancel-text="No"
+            @md-confirm="del" />
+          <md-button class="md-raised md-danger" @click="active = true"><md-icon>delete</md-icon>Delete</md-button>
+        </div>
+      </md-table-toolbar>
+
       <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
         <md-table-cell md-label="User Name" md-sort-by="cn"><router-link :to="{ path: item.cn }" append>{{ item.cn }}</router-link></md-table-cell>
-        <md-table-cell md-label="email" md-sort-by="mail">{{ item.mail }}</md-table-cell>
+        <md-table-cell md-label="Email" md-sort-by="mail">{{ item.mail }}</md-table-cell>
         <md-table-cell md-label="First Name" md-sort-by="givenName">{{ item.givenName }}</md-table-cell>
         <md-table-cell md-label="Last Name" md-sort-by="sn">{{ item.sn }}</md-table-cell>
       </md-table-row>
-    </md-table>
-    </div>
-    <div class="md-layout-item md-size-100 text-right">
-      <md-dialog-confirm
-        :md-active.sync="active"
-        md-content="Are you Sure?"
-        md-confirm-text="Yes"
-        md-cancel-text="No"
-        @md-confirm="del" />
-      <md-button class="md-raised md-success" @click="add">Add</md-button>
-      <md-button class="md-raised md-success" @click="active = true">Delete</md-button>
+    </md-table>    
     </div>
   </div>
 </template>
@@ -74,6 +82,13 @@ export default {
       items.forEach(element => {
       this.selected.push(element.cn);
       });
+    },
+    getAlternateLabel (count) {
+      let plural = ''
+      if (count > 1) {
+        plural = 's'
+      }
+      return `${count} host${plural} selected`
     },
     add () {
       Vue.$log.debug("Enter");

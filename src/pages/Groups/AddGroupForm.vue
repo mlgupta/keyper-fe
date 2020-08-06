@@ -2,7 +2,7 @@
   <form novalidate @submit.prevent="add">
     <md-card>
       <md-card-header :data-background-color="dataBackgroundColor">
-        <h4 class="title">Add Host</h4>
+        <h4 class="title">Add Group</h4>
         <p class="category"></p>
       </md-card-header>
 
@@ -11,15 +11,22 @@
           <div class="md-layout-item md-size-100">
             <md-field :class="getValidationClass('cn')">
               <label>Name</label>
-              <md-input v-model="host.cn" :disabled="sending"></md-input>
-              <span class="md-error" v-if="!$v.host.cn.required">Host name is required</span>
-              <span class="md-error" v-else-if="!$v.host.cn.minlength">Invalid Host Name</span>
+              <md-input v-model="group.cn" :disabled="sending"></md-input>
+              <span class="md-error" v-if="!$v.group.cn.required">Group name is required</span>
+              <span class="md-error" v-else-if="!$v.group.cn.minlength">Invalid Group Name</span>
             </md-field>
           </div>          
           <div class="md-layout-item md-size-100">
               <md-field>
-                  <label>Owners</label>
-                  <multiselect v-model="host.owners" :options="users" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true">                    
+                  <label>Members</label>
+                  <multiselect v-model="group.members" :options="users" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Members">                    
+                  </multiselect>
+              </md-field>
+          </div>
+          <div class="md-layout-item md-size-100">
+              <md-field>
+                  <label>Hosts</label>
+                  <multiselect v-model="group.hosts" :options="hosts" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Hosts">                    
                   </multiselect>
               </md-field>
           </div>         
@@ -47,7 +54,7 @@ export default {
   components: {
     Multiselect
   },
-  name: "add-host-form",
+  name: "add-group-form",
   mixins: [validationMixin],  
   props: {
     dataBackgroundColor: {
@@ -56,20 +63,24 @@ export default {
     },
     users: {
         type: Array
+    },
+    hosts: {
+        type: Array
     }
   },  
   data() {
     return {      
-      host: {
+      group: {
         cn: null,        
-        owners: []
+        members: [],
+        hosts: []
       },
 
       sending: false
     };
   },
   validations: {
-    host: {
+    group: {
       cn: {
         required,
         minLength: minLength(3)
@@ -86,7 +97,7 @@ export default {
   },
   watch: {
     alertMsg(newAlert) {
-      Vue.$log.debug("Enter in AddHostForm");
+      Vue.$log.debug("Enter in AddGroupForm");
       Vue.$log.debug("Alert Type: " + this.alert.type);
 
       if (this.alert.type == null) {
@@ -94,7 +105,7 @@ export default {
       }
       else {
         if (this.alert.type == 'success') {          
-          this.host.cn = null;          
+          this.group.cn = null;          
         }
         this.notifyVue(this.alert.type, this.alert.message);
         this.$store.dispatch('alert/clear');
@@ -109,7 +120,7 @@ export default {
       Vue.$log.debug("Enter");
       Vue.$log.debug("fieldName: " + fieldName);
 
-      const field = this.$v.host[fieldName];
+      const field = this.$v.group[fieldName];
       Vue.$log.debug("field: " + JSON.stringify(field));
       Vue.$log.debug("md-invalid: " + field.$invalid && field.$dirty);
 
@@ -126,7 +137,7 @@ export default {
 
       if (!this.$v.$invalid) {
         this.sending = true;
-        this.$emit('add-host', this.host);
+        this.$emit('add-group', this.group);
       }
     },
     notifyVue(type, msg) {
