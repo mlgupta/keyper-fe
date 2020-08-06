@@ -15,7 +15,13 @@
               <span class="md-error" v-if="!$v.group.cn.required">Group name is required</span>
               <span class="md-error" v-else-if="!$v.group.cn.minlength">Invalid Group Name</span>
             </md-field>
-          </div>          
+          </div>        
+          <div class="md-layout-item md-size-100">
+            <md-field maxlength="5">
+              <label>Description</label>
+              <md-textarea v-model="group.description"></md-textarea>
+            </md-field>
+          </div>  
           <div class="md-layout-item md-size-100">
               <md-field>
                   <label>Members</label>
@@ -30,12 +36,7 @@
                   </multiselect>
               </md-field>
           </div>         
-          <div class="md-layout-item md-size-100">
-            <md-field maxlength="5">
-              <label>Description</label>
-              <md-textarea ></md-textarea>
-            </md-field>
-          </div>
+          
           <div class="md-layout-item md-size-100 text-right">
             <md-button type="submit" class="md-raised md-success" :disabled="sending">Add</md-button>
           </div>
@@ -71,7 +72,8 @@ export default {
   data() {
     return {      
       group: {
-        cn: null,        
+        cn: null,   
+        description: null,     
         members: [],
         hosts: []
       },

@@ -22,7 +22,12 @@
 
       <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
         <md-table-cell md-label="Name" md-sort-by="cn"><router-link :to="{ path: item.cn }" append>{{ item.cn }}</router-link></md-table-cell>            
-        <md-table-cell md-label="Members">{{ item.members }}</md-table-cell>
+        <md-table-cell md-label="Description">
+          <v-clamp autoresize :max-lines="1"> {{ item.description }} </v-clamp> 
+        </md-table-cell>
+        <md-table-cell md-label="Members">
+          <v-clamp autoresize :max-lines="1"> {{ item.members }} </v-clamp> 
+        </md-table-cell>
       </md-table-row>
     </md-table>
     </div>    

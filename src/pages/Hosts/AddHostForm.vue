@@ -15,20 +15,21 @@
               <span class="md-error" v-if="!$v.host.cn.required">Host name is required</span>
               <span class="md-error" v-else-if="!$v.host.cn.minlength">Invalid Host Name</span>
             </md-field>
-          </div>          
-          <div class="md-layout-item md-size-100">
-              <md-field>
-                  <label>Owners</label>
-                  <multiselect v-model="host.owners" :options="users" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true">                    
-                  </multiselect>
-              </md-field>
-          </div>         
+          </div>      
           <div class="md-layout-item md-size-100">
             <md-field maxlength="5">
               <label>Description</label>
-              <md-textarea ></md-textarea>
+              <md-textarea v-model="host.description"></md-textarea>
             </md-field>
-          </div>
+          </div>    
+          <div class="md-layout-item md-size-100">
+              <md-field>
+                  <label>Owners</label>
+                  <multiselect v-model="host.owners" :options="users" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Owners">                    
+                  </multiselect>
+              </md-field>
+          </div>         
+          
           <div class="md-layout-item md-size-100 text-right">
             <md-button type="submit" class="md-raised md-success" :disabled="sending">Add</md-button>
           </div>
@@ -61,7 +62,8 @@ export default {
   data() {
     return {      
       host: {
-        cn: null,        
+        cn: null,
+        description: null,        
         owners: []
       },
 

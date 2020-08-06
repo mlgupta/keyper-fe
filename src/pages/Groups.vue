@@ -35,7 +35,12 @@ export default {
       var groups_arr = []
       groups_json.forEach(element => {
         var group = {};
-        group.cn = element.cn;        
+        group.cn = element.cn;
+        if ("description" in element){
+          group.description = element.description;
+        }else {
+          group.description = "";
+        }
         group.members = element.members.map(val => val.split(',')[0].split('=')[1]);
         group.members = group.members.join(', ')
         groups_arr.push(group);

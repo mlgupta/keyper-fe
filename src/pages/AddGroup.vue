@@ -30,7 +30,7 @@ export default {
             user.dn = element.dn;
             users_arr.push(user)
           });
-          // all_users = all_users.map(val => {val.dn, val.cn} );
+          
           return users_arr;
       },
       hosts() {
@@ -44,7 +44,7 @@ export default {
             host.dn = element.dn;
             hosts_arr.push(host)
           });
-          // all_users = all_users.map(val => {val.dn, val.cn} );
+          
           return hosts_arr;
       }
   },
@@ -58,12 +58,8 @@ export default {
         if (group.hosts != []){
           group.hosts = group.hosts.map(val => val.dn);
           group.members = group.members.concat(group.hosts)
-        }
-        debugger
-        delete group.hosts
-        // let new_group = {};
-        // new_group.cn = group.cn;
-        // new_group.members = group.members;
+        }        
+        delete group.hosts        
         Vue.$log.debug("group: " + JSON.stringify(group));
         this.$store.dispatch('groupStore/addGroup', { group } );
         this.$router.push("/admin/groups");

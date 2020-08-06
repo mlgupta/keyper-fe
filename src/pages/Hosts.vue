@@ -35,7 +35,12 @@ export default {
       var hosts_arr = []
       hosts_json.forEach(element => {
         var host = {};
-        host.cn = element.cn;        
+        host.cn = element.cn;
+        if ("description" in element){
+          host.description = element.description
+        }else {
+          host.description = ""
+        }
         if ("owners" in element) {
           host.owners = element.owners.map(val => val.split(',')[0].split('=')[1]);
           host.owners = host.owners.join(', ')
