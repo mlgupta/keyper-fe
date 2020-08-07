@@ -59,10 +59,11 @@
             </md-field>
           </div>
           <div class="md-layout-item md-size-100">
-            <md-field maxlength="5">
-              <label>About Me</label>
-              <md-textarea ></md-textarea>
-            </md-field>
+              <md-field>
+                  <label>Owners</label>
+                  <multiselect v-model="user.memberOfs" :options="groups" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Groups">
+                  </multiselect>
+              </md-field>
           </div>
           <div class="md-layout-item md-size-100 text-right">
             <md-button type="submit" class="md-raised md-success" :disabled="sending">Add</md-button>
@@ -76,15 +77,22 @@
 import Vue from "vue";
 import { validationMixin } from 'vuelidate';
 import { required, minLength, maxLength, email, sameAs } from 'vuelidate/lib/validators';
+import Multiselect from 'vue-multiselect';
 
 export default {
+  components: {
+    Multiselect
+  },
   name: "add-user-form",
-  mixins: [validationMixin],
+  mixins: [validationMixin],  
   props: {
     dataBackgroundColor: {
       type: String,
       default: ""
     },
+    groups: {
+      type: Array
+    }
   },
   data() {
     return {
@@ -96,7 +104,8 @@ export default {
         sn: null,
         displayName: null,
         userPassword: null,
-        confirmPassword: null
+        confirmPassword: null,
+        memberOfs: []
       },
       sending: false
     };
