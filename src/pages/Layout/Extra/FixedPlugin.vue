@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed-plugin" v-click-outside="closeDropDown">
+  <div class="fixed-plugin" v-click-outside="closeDropDown" style="display:none;">
     <div class="dropdown show-dropdown" :class="{ show: isOpen }">
       <a data-toggle="dropdown">
         <i class="fa fa-cog fa-2x" @click="toggleDropDown"> </i>
