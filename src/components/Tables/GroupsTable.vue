@@ -36,9 +36,13 @@
 
 <script>
 import Vue from "vue";
+import VClamp from 'vue-clamp'
 
 export default {
   name: "groups-table",
+  components: {
+    VClamp
+  },
   props: {
     tableHeaderColor: {
       type: String,
