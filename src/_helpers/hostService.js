@@ -54,7 +54,7 @@ function updateHost(host) {
         headers: authHeader()
     }
 
-    return axios.put(process.env.VUE_APP_API_URL + '/hosts/' + host.id, host.changes, config)
+    return axios.put(process.env.VUE_APP_API_URL + '/hosts/' + host.cn, host.changes, config)
         .then(response => {
             Vue.$log.debug(response);
             const host = response.data;

@@ -6,8 +6,7 @@ export const userService = {
     getUsers,
     createUser,
     updateUser,
-    deleteUser,
-    createUser
+    deleteUser
 };
 
 

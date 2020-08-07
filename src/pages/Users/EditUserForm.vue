@@ -49,13 +49,7 @@
               <label>Confirm Password</label>
               <md-input v-model="confirmPassword" type="password"></md-input>
             </md-field>
-          </div>
-          <div class="md-layout-item md-size-100">
-            <md-field maxlength="5">
-              <label>About Me</label>
-              <md-textarea ></md-textarea>
-            </md-field>
-          </div>
+          </div>          
           <div class="md-layout-item md-size-100 text-right">
             <md-button class="md-raised md-success" @click="update">Update</md-button>
           </div>
