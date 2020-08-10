@@ -2,7 +2,7 @@
   <form>
     <md-card>
       <md-card-header :data-background-color="dataBackgroundColor">
-        <h4 class="title">Add Host</h4>
+        <h4 class="title">Edit Host</h4>
         <p class="category"></p>
       </md-card-header>
 

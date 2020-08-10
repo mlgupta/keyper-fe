@@ -25,12 +25,17 @@ export default {
       var host = this.$store.getters['hostStore/getHostById'](this.$route.params.id);
       var owners = []      
       if ("owners" in host && host.owners != []){                
-        host.owners.forEach(element => {
-          Vue.$log.debug(element);          
+        host.owners.forEach(element => {                  
           var owner = {};
-          owner.dn = element
-          owner.cn = element.split(',')[0].split('=')[1]
-          owners.push(owner)
+          if (typeof(element) != 'object'){
+            owner.dn = element
+            owner.cn = element.split(',')[0].split('=')[1]
+            owners.push(owner)
+          }else {
+            owner.dn = element.dn;
+            owner.cn = element.cn;
+            owners.push(owner)
+          }
         });        
       }
       host.owners = owners;

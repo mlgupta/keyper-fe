@@ -9,10 +9,10 @@ export const groupStore = {
     getters: {
         getGroupById: (state) => (id) => {
             Vue.$log.debug("In getGroupbyID: " + id);
-            return state.all.find(group => group.cn === id);
+            return state.all.find(group => group.cn.trim() === id.trim());
         }
     },
-    actions: {
+    actions: {        
         getGroups({ dispatch, commit }) {
             commit('getGroups');
 
@@ -75,7 +75,7 @@ export const groupStore = {
         },
     },
 
-    mutations: {
+    mutations: {        
         getGroups(state) {
             Vue.$log.debug("getGroups Enter")
             state.all = [];

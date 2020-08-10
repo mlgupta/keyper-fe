@@ -10,5 +10,6 @@ import AddHostForm from "../pages/Hosts/AddHostForm.vue";
 import EditHostForm from "../pages/Hosts/EditHostForm.vue";
 
 import AddGroupForm from "../pages/Groups/AddGroupForm.vue";
+import EditGroupForm from "../pages/Groups/EditGroupForm.vue";
 
-export { UserCard, EditProfileForm, EditUserForm, AddUserForm, AddHostForm, EditHostForm, AddGroupForm };
+export { UserCard, EditProfileForm, EditUserForm, AddUserForm, AddHostForm, EditHostForm, AddGroupForm, EditGroupForm };

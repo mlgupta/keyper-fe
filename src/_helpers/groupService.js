@@ -3,12 +3,11 @@ import { authHeader } from './auth_header';
 import axios from "axios";
 
 export const groupService = {
-    getGroups,
+    getGroups,    
     createGroup,
     updateGroup,
     deleteGroup
 };
-
 
 function getGroups() {
     Vue.$log.debug("Enter");
@@ -54,7 +53,7 @@ function updateGroup(group) {
         headers: authHeader()
     }
 
-    return axios.put(process.env.VUE_APP_API_URL + '/groups/' + group.id, group.changes, config)
+    return axios.put(process.env.VUE_APP_API_URL + '/groups/' + group.cn, group.changes, config)
         .then(response => {
             Vue.$log.debug(response);
             const group = response.data;
