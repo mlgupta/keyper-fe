@@ -60,7 +60,7 @@
           </div>
           <div class="md-layout-item md-size-100">
               <md-field>
-                  <label>Owners</label>
+                  <label>Groups</label>
                   <multiselect v-model="user.memberOfs" :options="groups" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Groups">
                   </multiselect>
               </md-field>

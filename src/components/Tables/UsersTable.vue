@@ -63,7 +63,6 @@ export default {
     alertMsg(newAlert) {
       Vue.$log.debug("Enter");
       Vue.$log.debug("Alert Type: " + this.alert.type);
-
       if (this.alert.type == null) {
         Vue.$log.debug("Nothing in alert");
       }
