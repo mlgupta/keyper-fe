@@ -128,20 +128,13 @@ export default {
 
       const { username, password } = this.form;
       const { dispatch } = this.$store;
-/*
-      if (this.missingUserName) {
-        Vue.$log.debug("Missing Username");
-        this.notifyVue('warning', 'Username is required');
-      }
-      if (this.missingPassword) {
-        this.notifyVue('warning', 'Password is required');
-      }
-*/
+
       this.$v.$touch();
 
       if (!this.$v.$invalid) {
         this.sending = true;
         dispatch('authentication/login', { username, password });
+        this.sending = false
       }
     },
     notifyVue(type, msg) {
