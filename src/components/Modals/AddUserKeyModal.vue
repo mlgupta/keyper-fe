@@ -12,7 +12,7 @@
             </md-field>            
             <md-field maxlength="5">
               <label>Valid For (days)</label>              
-              <md-input v-model="userkey.duration" :value=90 placeholder="90" required></md-input>
+              <md-input v-model="userkey.duration" required></md-input>
             </md-field>
             <md-field>
               <label>Hosts</label>

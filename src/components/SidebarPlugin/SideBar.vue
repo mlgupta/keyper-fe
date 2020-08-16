@@ -7,14 +7,15 @@
   >
     <div class="logo">
       <a href="#" class="simple-text logo-mini">
-        <div class="logo-img">
+        <md-icon>vpn_key</md-icon>
+        <!-- <div class="logo-img">
           <img :src="imgLogo" alt="" />
-        </div>
+          <md-icon>vpn_key</md-icon>
+        </div> -->
       </a>
 
       <a
-        href="https://www.creative-tim.com/product/vue-material-dashboard"
-        target="_blank"
+        href="/admin/users"        
         class="simple-text logo-normal"
       >
         {{ title }}

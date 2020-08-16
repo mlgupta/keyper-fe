@@ -16,8 +16,8 @@ export const authentication = {
                 .then(
                     user => {
                         Vue.$log.debug("Login succesful");
-                        commit('loginSuccess', user);
-                        router.push('/admin/dashboard');
+                        commit('loginSuccess', user);                        
+                        router.push('/admin/users');
                     },
                     error => {
                         Vue.$log.debug("Login Error: " + error);

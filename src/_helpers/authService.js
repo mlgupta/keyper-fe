@@ -30,7 +30,7 @@ function login(username, password) {
             }
             else if (err.request) {
                 Vue.$log.error("err.request: " + err.request);
-                error = err.request
+                error = err.request;
             }
             else {
                 Vue.$log.error("err.message: " + err.message);

@@ -17,13 +17,13 @@
 
         <div class="md-collapse">
           <md-list>
-            <md-list-item to="Dashboard">
+            <!-- <md-list-item to="Dashboard">
               <i class="material-icons">dashboard</i>
               <p class="hidden-lg hidden-md">Dashboard</p>
-            </md-list-item>
+            </md-list-item> -->
 
 
-            <md-list-item href="#/user">
+            <md-list-item :to="userProfile">
               <i class="material-icons">person</i>
               <p class="hidden-lg hidden-md">Profile</p>
             </md-list-item>
@@ -35,7 +35,8 @@
 </template>
 
 <script>
-export default {
+import Vue from "vue";
+export default {  
   data() {
     return {
     };
@@ -43,6 +44,13 @@ export default {
   methods: {
     toggleSidebar() {
       this.$sidebar.displaySidebar(!this.$sidebar.showSidebar);
+    }
+  },
+  computed: {
+    userProfile() {
+      var uid = this.$store.state.authentication.user.cn;      
+      var url = "/admin/userdetail/" + uid;
+      return url;
     }
   }
 };

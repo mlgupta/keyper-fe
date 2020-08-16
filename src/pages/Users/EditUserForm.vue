@@ -3,15 +3,17 @@
     <div class="md-layout-item md-size-100">
       <nav-tabs-card>
         <template slot='content'>
+          <span class="md-nav-tabs-title">Edit:</span>
           <md-tabs class='md-success' md-alignment='left'>
             <md-tab id='tab-home' md-label='User'>  
               <form>
                 <div class="md-layout">                  
                   <div class="md-layout-item md-size-100">              
-                    <label>Status</label>
-                      <md-field>                
+                    <label>Account Status</label>
+                      <md-field>                                        
                         <md-switch v-model="user.accountLocked" @change="value => handleChange(value, 'accountLocked')"> 
                         </md-switch>
+
                       </md-field>
                   </div>
                   <div class="md-layout-item md-small-size-100 md-size-50">
@@ -59,13 +61,18 @@
             </md-tab>
 
             <!-- User Keys -->
-            <md-tab id='tab-keys' md-label='Keys'>  
+            <md-tab id='tab-keys' md-label='SSH Keys'>  
               <div class="md-layout-item md-size-100">                   
                     <div class="md-layout-item md-size 100">                                          
-                      <add-user-key-modal :hosts="hosts" :user="user" class="text-right"> </add-user-key-modal>
+                      <add-user-key-modal :hosts="value" :user="user" class="text-right"> </add-user-key-modal>
                     </div>
                     <div>
-                      <md-table v-model="user.sshPublicKeys" md-sort="dateExpire">                  
+                      <md-table v-model="user.sshPublicKeys" md-sort="dateExpire">     
+                        <md-table-row slot="md-table-row">
+                          <md-table-cell md-label="Key"></md-table-cell>
+                          <md-table-cell md-label="Expiration"></md-table-cell>
+                          <md-table-cell md-label="Host"></md-table-cell>
+                        </md-table-row>             
                         <md-table-row slot="md-table-row" slot-scope= "{ item }">
                           <md-table-cell md-label="Key">
                             <v-clamp autoresize :max-lines="1"> {{item.key}} </v-clamp>

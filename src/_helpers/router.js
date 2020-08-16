@@ -5,7 +5,7 @@ import { isValidJwt } from "../_helpers";
 import DashboardLayout from "@/pages/Layout/DashboardLayout.vue";
 import LoginLayout from "@/pages/Layout/LoginLayout.vue";
 
-import Dashboard from "@/pages/Dashboard.vue";
+// import Dashboard from "@/pages/Dashboard.vue";
 import Login from "@/pages/Login.vue";
 import Logout from "@/pages/Logout.vue";
 import Users from "@/pages/Users.vue";
@@ -17,6 +17,8 @@ import AddHost from "@/pages/AddHost.vue";
 import Groups from "@/pages/Groups.vue";
 import Group from "@/pages/Group.vue";
 import AddGroup from "@/pages/AddGroup.vue";
+// import UserDetail from "@/pages/UserProfile/UserCard.vue";
+import UserDetail from "@/pages/UserDetail.vue";
 
 const routes = [
   {
@@ -40,13 +42,13 @@ const routes = [
   {
     path: "/admin",
     component: DashboardLayout,
-    redirect: "/admin/dashboard",
+    redirect: "/admin/users",
     children: [
-      {
-        path: "dashboard",
-        name: "Dashboard",
-        component: Dashboard
-      },
+      // {
+      //   path: "dashboard",
+      //   name: "Dashboard",
+      //   component: Dashboard
+      // },
       {
         path: "adduser",
         name: "AddUser",
@@ -91,6 +93,11 @@ const routes = [
         path: "addgroup",
         name: "AddGroup",
         component: AddGroup
+      },
+      {
+        path: "userdetail/:id",
+        name: "UserDetail",
+        component: UserDetail
       }
     ]
   }

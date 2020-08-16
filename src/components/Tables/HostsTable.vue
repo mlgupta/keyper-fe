@@ -21,12 +21,12 @@
       </md-table-toolbar>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
-        <md-table-cell md-label="Name" md-sort-by="cn"><router-link :to="{ path: item.cn }" append>{{ item.cn }}</router-link></md-table-cell>            
+        <md-table-cell md-label="Name" md-sort-by="cn"><router-link :to="{ path: item.cn }" append>{{ item.cn }}</router-link></md-table-cell>
         <md-table-cell md-label="Description">
-          <v-clamp autoresize :max-lines="1"> {{ item.description }} </v-clamp> 
+          <v-clamp autoresize :max-lines="1"> {{ item.description }} </v-clamp>
         </md-table-cell>
         <md-table-cell md-label="Owners">
-          <v-clamp autoresize :max-lines="1"> {{ item.owners }} </v-clamp> 
+          <v-clamp autoresize :max-lines="1"> {{ item.owners }} </v-clamp>
         </md-table-cell>        
       </md-table-row>
     </md-table>
