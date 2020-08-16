@@ -46,6 +46,12 @@ export default {
           host.owners = host.owners.join(', ')
         }else {
           host.owners = ''
+        }
+        if ("memberOfs" in element) {
+          host.memberOfs = element.memberOfs.map(val => val.split(',')[0].split('=')[1]);
+          host.memberOfs = host.memberOfs.join(', ')
+        }else {
+          host.memberOfs = ''
         }      
         
         hosts_arr.push(host);
