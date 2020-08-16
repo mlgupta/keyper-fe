@@ -25,6 +25,11 @@
         <md-table-cell md-label="Email" md-sort-by="mail">{{ item.mail }}</md-table-cell>
         <md-table-cell md-label="First Name" md-sort-by="givenName">{{ item.givenName }}</md-table-cell>
         <md-table-cell md-label="Last Name" md-sort-by="sn">{{ item.sn }}</md-table-cell>
+        <md-table-cell md-label="Groups">
+          <md-chip v-for="item in item.memberOfs" :key="item">
+            {{groupName(item)}}
+          </md-chip>
+        </md-table-cell>
       </md-table-row>
     </md-table>    
     </div>
@@ -76,6 +81,9 @@ export default {
     this.$store.dispatch('alert/clear');
   },
   methods: {
+    groupName(group_name) {
+      return group_name.split(',')[0].split('=')[1];
+    },
     onSelect (items) {
       this.selected = []
       items.forEach(element => {
