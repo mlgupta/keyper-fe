@@ -26,7 +26,8 @@
           <v-clamp autoresize :max-lines="1"> {{ item.description }} </v-clamp>
         </md-table-cell>
         <md-table-cell md-label="Member Of">
-          <v-clamp autoresize :max-lines="1"> {{ item.memberOfs }} </v-clamp>
+          <md-chip v-for="item in item.memberOfs" :key="item"> {{item}}</md-chip>
+          <!-- <v-clamp autoresize :max-lines="1"> {{ item.memberOfs }} </v-clamp> -->
         </md-table-cell> 
         <!-- <md-table-cell md-label="Owners">
           <v-clamp autoresize :max-lines="1"> {{ item.owners }} </v-clamp>

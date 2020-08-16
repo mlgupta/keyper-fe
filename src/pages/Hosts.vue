@@ -49,7 +49,7 @@ export default {
         }
         if ("memberOfs" in element) {
           host.memberOfs = element.memberOfs.map(val => val.split(',')[0].split('=')[1]);
-          host.memberOfs = host.memberOfs.join(', ')
+          // host.memberOfs = host.memberOfs.join(', ')
         }else {
           host.memberOfs = ''
         }      
