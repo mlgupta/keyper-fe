@@ -15,7 +15,6 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from "vue";
-import "./session";
 import VueRouter from "vue-router";
 import VueLogger from "vuejs-logger";
 import App from "./App";
