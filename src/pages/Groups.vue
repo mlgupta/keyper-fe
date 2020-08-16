@@ -42,7 +42,7 @@ export default {
           group.description = "";
         }
         group.members = element.members.map(val => val.split(',')[0].split('=')[1]);
-        group.members = group.members.join(', ')
+        // group.members = group.members.join(', ')
         groups_arr.push(group);
       });
       Vue.$log.debug(groups_arr)
