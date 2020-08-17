@@ -9,12 +9,12 @@
               <form>
                 <div class="md-layout">                  
                   <div class="md-layout-item md-size-100">              
-                    <label>Account Status</label>
-                      <md-field>                                        
-                        <md-switch v-model="user.accountLocked" @change="value => handleChange(value, 'accountLocked')"> 
-                        </md-switch>
-
-                      </md-field>
+                    <label>Account Status:   </label>
+                    <md-icon v-if="user.accountLocked" title='Locked'>lock</md-icon>
+                    <md-icon v-else title='UnLocked'>lock_open</md-icon>
+                    <md-field>                                        
+                      <md-switch v-model="user.accountLocked" @change="value => handleChange(value, 'accountLocked')"></md-switch>                      
+                    </md-field>
                   </div>
                   <div class="md-layout-item md-small-size-100 md-size-50">
                     <md-field>
