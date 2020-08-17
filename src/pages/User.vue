@@ -74,8 +74,8 @@ export default {
         var user={};
         user.id = userId;
         user.changes = changes;
-        debugger;
         this.$store.dispatch('userStore/updateUser', { user } );
+        this.$router.push("/admin/users");
     }
   }
 };
