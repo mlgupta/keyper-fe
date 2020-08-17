@@ -1,11 +1,9 @@
 <template>
   <div class="content">
     <div class="md-layout">
-      <div class="md-layout-item md-medium-size-100 md-size-66">
+      <div class="md-layout-item md-medium-size-100 md-size-100">
         <add-user-form data-background-color="green" v-on:add-user="addUser" :groups="groups"> </add-user-form>
-      </div>
-      <div class="md-layout-item md-medium-size-100 md-size-33">
-      </div>
+      </div>      
     </div>
   </div>
 </template>

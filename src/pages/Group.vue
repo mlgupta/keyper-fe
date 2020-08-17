@@ -1,11 +1,10 @@
 <template>
   <div class="content">
     <div class="md-layout">
-      <div class="md-layout-item md-medium-size-100 md-size-66">
-        <edit-group-form data-background-color="green" :group="group" :users="users" v-on:update-group="updateGroup"> </edit-group-form>
+      <div class="md-layout-item md-medium-size-100 md-size-100">
+        <edit-group-form data-background-color="green" :group="group" :users="users" :hosts="hosts" v-on:update-group="updateGroup"> </edit-group-form>
       </div>
-      <div class="md-layout-item md-medium-size-100 md-size-33">
-      </div>
+      
     </div>
   </div>
 </template>
@@ -24,26 +23,52 @@ export default {
       Vue.$log.debug(this.$route.params.id);
       var group = this.$store.getters['groupStore/getGroupById'](this.$route.params.id);
       var members = []   
-      var hosts = []   
+      var hosts = []  
+      var ou 
+      var host
       // debugger
       Vue.$log.debug(group);
       var new_group = group
       if ("members" in group){                
         group.members.forEach(element => {          
-          var member = {};
-          if (typeof(element) != 'object'){
-            Vue.$log.debug(element);            
-            member.dn = element;
-            member.cn = element.split(',')[0].split('=')[1];
-            members.push(member)               
-          }else {
-            member.dn = element.dn;
-            member.cn = element.cn;
-            members.push(member);
+          var member = {};  
+          host = {};        
+          if (typeof(element) != 'object'){            
+            ou = element.split(',')[1].split('=')[1];
+            if (ou === "people") {
+              Vue.$log.debug(element);            
+              member.dn = element;
+              member.cn = element.split(',')[0].split('=')[1];
+              members.push(member)               
+            }else {
+              host.dn = element;
+              host.cn = element.split(',')[0].split('=')[1];
+              hosts.push(host)
+            }
+          }else {            
+            ou = element.dn.split(',')[1].split('=')[1];
+            if (ou === 'people'){ 
+              member.dn = element.dn;
+              member.cn = element.cn;
+              members.push(member);
+            }else {
+              host.dn = element.dn;
+              host.cn = element.cn;
+              hosts.push(host);
+            }
           }
         });        
       }
+      if ("hosts" in group){
+        group.hosts.forEach(element => {
+          host = {}
+          host.dn = element.dn;
+          host.cn = element.cn;
+          hosts.push(host);
+        });
+      }
       new_group.members = members;      
+      new_group.hosts = hosts;
       // Vue.$log.debug(group);
       return new_group;
     },
@@ -60,6 +85,9 @@ export default {
             users_arr.push(user)
           });
           // all_users = all_users.map(val => {val.dn, val.cn} );
+          return users_arr;
+      },
+      hosts() {          
           var all_hosts = this.$store.state.hostStore.all;
           Vue.$log.debug(all_hosts);
           var hosts_arr = []
@@ -69,15 +97,7 @@ export default {
             host.dn = element.dn;
             hosts_arr.push(host)
           });
-          var option = {}
-          option.ou = 'users'
-          option.items = users_arr
-          options.push(option)
-          var option1 = {}
-          option1.ou = 'hosts'
-          option1.items = hosts_arr
-          options.push(option1)
-          return options;
+          return hosts_arr;
       }    
   },
   methods: {
