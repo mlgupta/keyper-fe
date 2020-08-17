@@ -27,19 +27,19 @@
           <div class="md-layout-item md-small-size-100 md-size-50">
             <md-field>
               <label>First Name</label>
-              <md-input v-model="user.givenName" type="text" :disabled="sending"></md-input>
+              <md-input v-model="user.givenName" @input="displayName()" type="text" :disabled="sending"></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
             <md-field>
               <label>Last Name</label>
-              <md-input v-model="user.sn" type="text" :disabled="sending"></md-input>
+              <md-input v-model="user.sn" @input="displayName()" type="text" :disabled="sending"></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-100">
             <md-field>
               <label>Display name</label>
-              <md-input v-model="user.displayName" type="text" :disabled="sending"></md-input>
+              <md-input v-model="user.displayName" :value="displayName" type="text" :disabled="sending"></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
@@ -138,7 +138,7 @@ export default {
     },
     alertMsg() {
       return this.$store.state.alert.message;
-    },
+    }
   },
   watch: {
     alertMsg(newAlert) {
@@ -180,6 +180,11 @@ export default {
           'md-invalid': field.$invalid && field.$dirty
         }
       }
+    },
+    displayName() {
+      var fn = this.user.givenName === null ? '' : this.user.givenName;
+      var ln = this.user.sn === null ? '' : this.user.sn;
+      this.user.displayName = fn + " " + ln;
     },
     add() {
       Vue.$log.debug("Enter");
