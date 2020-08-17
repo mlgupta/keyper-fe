@@ -9,12 +9,12 @@
               <form>
                 <div class="md-layout">                  
                   <div class="md-layout-item md-size-100">              
-                    <label>Account Status</label>
-                      <md-field>                                        
-                        <md-switch v-model="user.accountLocked" @change="value => handleChange(value, 'accountLocked')"> 
-                        </md-switch>
-
-                      </md-field>
+                    <label>Account Status:   </label>
+                    <md-icon v-if="user.accountLocked" title='Locked'>lock</md-icon>
+                    <md-icon v-else title='UnLocked'>lock_open</md-icon>
+                    <md-field>                                        
+                      <md-switch v-model="user.accountLocked" @change="value => handleChange(value, 'accountLocked')"></md-switch>                      
+                    </md-field>
                   </div>
                   <div class="md-layout-item md-small-size-100 md-size-50">
                     <md-field>
@@ -66,15 +66,15 @@
                     <div class="md-layout-item md-size 100">                                          
                       <add-user-key-modal :hosts="value" :user="user" class="text-right"> </add-user-key-modal>
                     </div>
-                    <div>
-                      <md-table v-model="user.sshPublicKeys" md-sort="dateExpire">     
-                        <md-table-row slot="md-table-row">
-                          <md-table-cell md-label="Key"></md-table-cell>
-                          <md-table-cell md-label="Expiration"></md-table-cell>
-                          <md-table-cell md-label="Host"></md-table-cell>
-                        </md-table-row>             
-                        <md-table-row slot="md-table-row" slot-scope= "{ item }">
-                          <md-table-cell md-label="Key">
+                    <div v-if="hasKeys">
+                      <md-table v-model="user.sshPublicKeys">       
+                        <md-table-row>
+                          <md-table-head>Key</md-table-head>
+                          <md-table-head>Expiration</md-table-head>
+                          <md-table-head>Hosts</md-table-head>
+                        </md-table-row>    
+                        <md-table-row v-for="item in user.sshPublicKeys" :key="item">
+                          <md-table-cell>
                             <v-clamp autoresize :max-lines="1"> {{item.key}} </v-clamp>
                           </md-table-cell>
                           <md-table-cell md-label="Expiration"> {{dateExpire(item.dateExpire)}} </md-table-cell>
@@ -85,9 +85,17 @@
                               <md-tooltip md-direction='top'>Delete Key</md-tooltip>
                             </md-button>
                           </md-table-cell>
-                        </md-table-row>
+                        </md-table-row>                        
                       </md-table>      
-                    </div>                
+                    </div>  
+                    <div v-else>
+                      <md-empty-state
+                        md-icon="vpn_key"
+                        md-label="Add Key"
+                        md-description="Add key for the user.">
+                        <add-user-key-modal :hosts="value" :user="user" class="text-right"> </add-user-key-modal>
+                      </md-empty-state>
+                    </div>              
                   </div>
             </md-tab>
           </md-tabs>
@@ -146,6 +154,17 @@ export default {
     alertMsg() {
       return this.$store.state.alert.message;
     },
+    hasKeys() {
+      if ("sshPublicKeys" in this.user){
+        if (this.user.sshPublicKeys.length > 0){
+          return true;
+        }else {
+          return false;
+        }
+      }else {
+        return false;
+      }
+    }
   },
   watch: {
     alertMsg(newAlert) {

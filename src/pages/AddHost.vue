@@ -1,10 +1,8 @@
 <template>
   <div class="content">
     <div class="md-layout">
-      <div class="md-layout-item md-medium-size-100 md-size-66">
-        <add-host-form data-background-color="green" v-on:add-host="addHost" :users="users"> </add-host-form>
-      </div>
-      <div class="md-layout-item md-medium-size-100 md-size-33">
+      <div class="md-layout-item md-medium-size-100 md-size-100">
+        <add-host-form data-background-color="green" v-on:add-host="addHost" :users="users" > </add-host-form>
       </div>
     </div>
   </div>
@@ -36,6 +34,7 @@ export default {
   },
   methods: {
     addHost(host) {
+        
         Vue.$log.debug("Enter");        
         if (host.owners != []){
           host.owners = host.owners.map(val => val.dn);

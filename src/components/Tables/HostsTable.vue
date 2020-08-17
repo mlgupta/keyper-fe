@@ -1,39 +1,43 @@
 <template>
   <div>   
-    <div>
-    <md-table v-model="hosts" :table-header-color="tableHeaderColor" @md-selected="onSelect" md-sort="cn" md-sort-order="asc" md-card md-fixed-header> 
-      <md-table-toolbar>
-        <div class="md-layout-item md-size-100 text-right">   
-          <md-button class="md-raised md-success" @click="add"><md-icon>add</md-icon>Add</md-button>
-        </div>        
-      </md-table-toolbar>
-      <md-table-toolbar slot="md-table-alternate-header" slot-scope="{ count }" class="md-danger">
-        <div class="md-toolbar-section-start">{{ getAlternateLabel(count) }}</div>
-        <div class="md-toolbar-section-end">
-          <md-dialog-confirm
-            :md-active.sync="active"
-            md-content="Are you sure, you want to delete the selected host(s)?"
-            md-confirm-text="Yes"
-            md-cancel-text="No"
-            @md-confirm="del" />
-          <md-button class="md-raised md-danger" @click="active = true"><md-icon>delete</md-icon>Delete</md-button>
-        </div>
-      </md-table-toolbar>
-
-      <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
-        <md-table-cell md-label="Name" md-sort-by="cn"><router-link :to="{ path: item.cn }" append>{{ item.cn }}</router-link></md-table-cell>
-        <md-table-cell md-label="Description">
-          <v-clamp autoresize :max-lines="1"> {{ item.description }} </v-clamp>
-        </md-table-cell>
-        <md-table-cell md-label="Member Of">
-          <md-chip v-for="item in item.memberOfs" :key="item"> {{item}}</md-chip>
-          <!-- <v-clamp autoresize :max-lines="1"> {{ item.memberOfs }} </v-clamp> -->
-        </md-table-cell> 
-        <!-- <md-table-cell md-label="Owners">
-          <v-clamp autoresize :max-lines="1"> {{ item.owners }} </v-clamp>
-        </md-table-cell>         -->
-      </md-table-row>
-    </md-table>
+    <div v-if="hasHosts">
+      <md-table v-model="hosts" :table-header-color="tableHeaderColor" @md-selected="onSelect" md-sort="cn" md-sort-order="asc" md-card md-fixed-header> 
+        <md-table-toolbar>
+          <div class="md-layout-item md-size-100 text-right">   
+            <md-button class="md-raised md-success" @click="add"><md-icon>add</md-icon>Add</md-button>
+          </div>        
+        </md-table-toolbar>
+        <md-table-toolbar slot="md-table-alternate-header" slot-scope="{ count }" class="md-danger">
+          <div class="md-toolbar-section-start">{{ getAlternateLabel(count) }}</div>
+          <div class="md-toolbar-section-end">
+            <md-dialog-confirm
+              :md-active.sync="active"
+              md-content="Are you sure, you want to delete the selected host(s)?"
+              md-confirm-text="Yes"
+              md-cancel-text="No"
+              @md-confirm="del" />
+            <md-button class="md-raised md-danger" @click="active = true"><md-icon>delete</md-icon>Delete</md-button>
+          </div>
+        </md-table-toolbar>
+        
+          <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
+            <md-table-cell md-label="Name" md-sort-by="cn"><router-link :to="{ path: item.cn }" append>{{ item.cn }}</router-link></md-table-cell>
+            <md-table-cell md-label="Description">
+              <v-clamp autoresize :max-lines="1"> {{ item.description }} </v-clamp>
+            </md-table-cell>
+            <md-table-cell md-label="Member Of">
+              <md-chip v-for="item in item.memberOfs" :key="item"> {{item}}</md-chip>
+            </md-table-cell>
+          </md-table-row>                       
+      </md-table>
+    </div>
+    <div v-else>
+      <md-empty-state
+        md-icon="computer"
+        md-label="Add your first host."
+        md-description=" ">
+        <md-button class="md-raised md-success" @click="add"><md-icon>add</md-icon>Add</md-button>
+      </md-empty-state>   
     </div>
     
   </div>
@@ -70,6 +74,13 @@ export default {
     alertMsg() {
       return this.$store.state.alert.message;
     },
+    hasHosts() {
+      if (this.hosts.length > 0){
+        return true;
+      }else {
+        return false;
+      }
+    }
   },
   watch: {
     alertMsg(newAlert) {

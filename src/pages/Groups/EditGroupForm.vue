@@ -23,10 +23,17 @@
           <div class="md-layout-item md-size-100">
               <md-field>
                   <label>Members</label>
-                  <multiselect :value="selectedMembers" @input="handleChange($event, 'members')" :options="users" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Group Members" group-values="items" group-label="ou" :group-select="true">                    
+                  <multiselect :value="selectedMembers" @input="handleChange($event, 'members')" :options="users" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Group Members">                    
                   </multiselect>                  
               </md-field>
-          </div>          
+          </div> 
+          <div class="md-layout-item md-size-100">
+              <md-field>
+                  <label>Hosts</label>
+                  <multiselect :value="selectedHosts" @input="handleChange($event, 'hosts')" :options="hosts" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Group Hosts">                    
+                  </multiselect>                  
+              </md-field>
+          </div>                   
           <div class="md-layout-item md-size-100 text-right">
             <md-button class="md-raised md-success" @click="update">Update</md-button>
           </div>
@@ -56,6 +63,9 @@ export default {
         type: Object
     },
     users: {
+      type: Array
+    },
+    hosts: {
       type: Array
     }
   },  
@@ -96,8 +106,13 @@ export default {
       Vue.$log.debug("event: " + JSON.stringify(e));    
       if (id === 'members'){
         this.selectedMembers = e;
+        e = e.concat(this.selectedHosts);
       }
-      Vue.$log.debug("id: " + id);
+      if (id === 'hosts'){
+        this.selectedHosts = e;
+        e = e.concat(this.selectedMembers);
+        id = 'members'
+      }      
       this.changes[id] = e;
       Vue.$log.debug(JSON.stringify(this.changes));
     },
