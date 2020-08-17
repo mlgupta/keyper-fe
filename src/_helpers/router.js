@@ -1,5 +1,6 @@
 import VueRouter from "vue-router";
 import Vue from "vue";
+import { store } from '../_store'
 import { isValidJwt } from "../_helpers";
 
 import DashboardLayout from "@/pages/Layout/DashboardLayout.vue";
@@ -137,8 +138,14 @@ router.beforeEach((to, from, next) => {
         }
       }
       else {
-        Vue.$log.debug("JWT Token Expired");
-        return next('/login');
+        Vue.$log.debug("JWT Token Expired. Lets see if we can refresh");
+        store.dispatch('authentication/refreshJWT').then(response => {
+          return next();
+        }, error => {
+          Vue.$log.debug("Token refresh Error");
+          return next('/login');
+        });
+
       }
     }
     else {
