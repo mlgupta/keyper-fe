@@ -1,9 +1,12 @@
 import axios from "axios";
 import Vue from "vue";
+import { refreshAuthHeader } from './auth_header';
+
 
 export const authService = {
     login,
-    logout
+    logout,
+    refreshJWT
 };
 
 function login(username, password) {
@@ -44,3 +47,47 @@ function login(username, password) {
 function logout() {
     localStorage.removeItem('user');
 }
+
+function refreshJWT() {
+    Vue.$log.debug("Enter");
+
+    const config = {
+        headers: refreshAuthHeader()
+    }
+    
+    Vue.$log.debug("Header: " + JSON.stringify(config));
+    Vue.$log.debug("Getting JWT Refresh Token");
+    return axios.post(process.env.VUE_APP_API_URL + "/refresh", {}, config)
+        .then(response => {
+            const access_token = response.data.access_token;
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (access_token) {
+                user.access_token = access_token;
+                Vue.$log.debug("Saving user data to local storage");
+                localStorage.setItem('user', JSON.stringify(user));
+            }
+            return access_token;
+        })
+        .catch(err => {
+            Vue.$log.error("refresh JWT Failure: ");
+
+            var error = '';
+
+            if (err.response) {
+                Vue.$log.error("err.response: " + JSON.stringify(err.response));
+                error = err.response.data.msg;
+            }
+            else if (err.request) {
+                Vue.$log.error("err.request: " + err.request);
+                error = err.request;
+            }
+            else {
+                Vue.$log.error("err.message: " + err.message);
+                error = err.message;
+            }
+            Vue.$log.debug("error: " + error);
+            return Promise.reject(error);
+        });
+}
+
