@@ -1,6 +1,6 @@
 <template>
   <div class='md-layout'>
-    <user-card :user="user" :group='groups' :hosts="hosts" v-on:update-user="updateUser"></user-card>
+    <user-card :user="user" v-on:update-user="updateUser"></user-card>
   </div>  
 </template>
 
@@ -37,30 +37,6 @@ export default {
       }
       new_user.memberOfs = memberOfs;
       return new_user;
-    },
-    groups() {
-      var all_groups = this.$store.state.groupStore.all;
-      var groups_arr = [];
-      all_groups.forEach(element => {
-        var group = {}
-        group.cn = element.cn;
-        group.dn = element.dn;
-        groups_arr.push(group);
-      });
-      return groups_arr;
-    },
-    hosts() {
-      Vue.$log.debug("getting list of hosts")
-      var all_hosts = this.$store.state.hostStore.all;
-      Vue.$log.debug(all_hosts);
-      var hosts_arr = []
-      all_hosts.forEach(element => {
-        var host = {};
-        host.cn = element.cn;
-        host.dn = element.dn;
-        hosts_arr.push(host)
-      });      
-      return hosts_arr;
     }
   },
   methods: {

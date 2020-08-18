@@ -160,12 +160,6 @@ export default {
     },
     user: {
       type: Object
-    },
-    groups: {
-      type: Array
-    },
-    hosts: {
-      type: Array
     }
   },
   validations: {

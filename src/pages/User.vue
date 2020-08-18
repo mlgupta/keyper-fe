@@ -71,6 +71,9 @@ export default {
         var userId = this.$route.params.id;
         Vue.$log.debug("userId: " + userId);
         Vue.$log.debug("changes: " + JSON.stringify(changes));
+        if("memberOfs" in changes){
+          changes.memberOfs = changes.memberOfs.map(val => val.dn);
+        }
         var user={};
         user.id = userId;
         user.changes = changes;

@@ -49,7 +49,7 @@
                   <div class="md-layout-item md-size-100">
                       <label>Groups</label>
                       <md-field>                  
-                          <multiselect :value=value @input="handleChange($event, 'groups')" :options="groups" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Groups">
+                          <multiselect :value=value @input="handleChange($event, 'memberOfs')" :options="groups" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Groups">
                           </multiselect>
                       </md-field>
                   </div>                  
@@ -199,7 +199,7 @@ export default {
     handleChange(e, id) {
       Vue.$log.debug("event: " + e);
       Vue.$log.debug("id: " + id);
-      if (id === 'groups'){
+      if (id === 'memberOfs'){
         this.value = e;
       }
       this.changes[id] = e;
