@@ -81,7 +81,7 @@
         var sshKeys = {}
         sshKeys.sshPublicKeys = sshKeys_arr;
         var user = {};
-        user.id = this.user.cn;
+        user.cn = this.user.cn;
         user.changes = sshKeys;
         this.$store.dispatch('userStore/updateUser', { user } );
         this.showDialog = false;

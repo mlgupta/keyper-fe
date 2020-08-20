@@ -34,7 +34,9 @@ export default {
     users() {
       Vue.$log.debug("Here in users");
       Vue.$log.debug(JSON.stringify(this.$store.state.userStore.all));
-
+      this.$nextTick(function () {
+        console.log(this.$el.textContent) // => 'updated'
+      })
       return this.$store.state.userStore.all;
     }
   },
