@@ -19,8 +19,6 @@
     "vue-material": "1.0.0-beta-11",
     "vue-multiselect": "^2.1.6",
     "vue-router": "3.1.6",
-    "vue-session": "^1.0.0",
-    "vue-sessionstorage": "^1.0.0",
     "vue-social-sharing": "2.4.7",
     "vuejs-logger": "^1.5.4",
     "vuelidate": "^0.7.5",

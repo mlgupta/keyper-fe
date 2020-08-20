@@ -73,7 +73,7 @@
                           <md-table-head>Expiration</md-table-head>
                           <md-table-head>Hosts</md-table-head>
                         </md-table-row>    
-                        <md-table-row v-for="item in user.sshPublicKeys" :key="item">
+                        <md-table-row v-for="item in user.sshPublicKeys" :key="item.key">
                           <md-table-cell>
                             <v-clamp autoresize :max-lines="1"> {{item.key}} </v-clamp>
                           </md-table-cell>

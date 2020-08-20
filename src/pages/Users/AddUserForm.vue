@@ -105,7 +105,8 @@ export default {
         displayName: null,
         userPassword: null,
         confirmPassword: null,
-        memberOfs: []
+        memberOfs: [],
+        sshPublicKeys: []
       },
       sending: false
     };

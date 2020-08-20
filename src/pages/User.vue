@@ -21,7 +21,7 @@ export default {
       Vue.$log.debug("Here in one User");
       Vue.$log.debug(this.$route.params.id);
       var user = this.$store.getters['userStore/getUserById'](this.$route.params.id);
-      var new_user = user;
+      // var new_user = user;
       var memberOfs = []
       if("memberOfs" in user){
         user.memberOfs.forEach(element => {
@@ -37,8 +37,8 @@ export default {
           }
         });        
       }
-      new_user.memberOfs = memberOfs;
-      return new_user;
+      user.memberOfs = memberOfs;
+      return user;
     },
     groups() {
       var all_groups = this.$store.state.groupStore.all;
@@ -75,10 +75,11 @@ export default {
           changes.memberOfs = changes.memberOfs.map(val => val.dn);
         }
         var user={};
-        user.id = userId;
+        user.cn = userId;
         user.changes = changes;
         this.$store.dispatch('userStore/updateUser', { user } );
-        this.$router.push("/admin/users");
+        Vue.nextTick();
+        // this.$router.push("/admin/users");
     }
   }
 };
