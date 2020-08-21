@@ -20,17 +20,10 @@ export default {
     user() {
       Vue.$log.debug("Here in one User");
       Vue.$log.debug(this.$route.params.id);
-<<<<<<< HEAD
       var user = this.$store.getters["userStore/getUserById"](this.$route.params.id);
-      var new_user = user;
+      //var new_user = user;
       var memberOfs = [];
       if ("memberOfs" in user) {
-=======
-      var user = this.$store.getters['userStore/getUserById'](this.$route.params.id);
-      // var new_user = user;
-      var memberOfs = []
-      if("memberOfs" in user){
->>>>>>> a11e65c29861fdbc144e67511441e8fd2e3130a1
         user.memberOfs.forEach(element => {
           var u = {};
           if (typeof(element) != "object") {
