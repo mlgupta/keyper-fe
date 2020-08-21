@@ -46,8 +46,8 @@
             <md-field :class="getValidationClass('userPassword')">
               <label>Password</label>
               <md-input v-model="user.userPassword" type="password" :disabled="sending"></md-input>
-              <span class="md-error" v-if="!$v.user.userPassword.required">Username is required</span>
-              <span class="md-error" v-else-if="!$v.user.userPassword.minlength">Invalid Username</span>
+              <span class="md-error" v-if="!$v.user.userPassword.required">Password is required</span>
+              <span class="md-error" v-else-if="!$v.user.userPassword.minlength">Invalid Password</span>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
@@ -59,11 +59,11 @@
             </md-field>
           </div>
           <div class="md-layout-item md-size-100">
-              <md-field>
-                  <label>Groups</label>
-                  <multiselect v-model="user.memberOfs" :options="groups" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Groups">
-                  </multiselect>
-              </md-field>
+            <md-field>
+                <label>Groups</label>
+                <multiselect v-model="user.memberOfs" :options="groups" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Groups">
+                </multiselect>
+            </md-field>
           </div>
           <div class="md-layout-item md-size-100 text-right">
             <md-button type="submit" class="md-raised md-success" :disabled="sending">Add</md-button>
@@ -75,16 +75,16 @@
 </template>
 <script>
 import Vue from "vue";
-import { validationMixin } from 'vuelidate';
-import { required, minLength, maxLength, email, sameAs } from 'vuelidate/lib/validators';
-import Multiselect from 'vue-multiselect';
+import { validationMixin } from "vuelidate";
+import { required, minLength, maxLength, email, sameAs } from "vuelidate/lib/validators";
+import Multiselect from "vue-multiselect";
 
 export default {
   components: {
     Multiselect
   },
   name: "add-user-form",
-  mixins: [validationMixin],  
+  mixins: [validationMixin],
   props: {
     dataBackgroundColor: {
       type: String,
@@ -96,7 +96,6 @@ export default {
   },
   data() {
     return {
-      confirmPassword: null,
       user: {
         cn: null,
         mail: null,
@@ -105,7 +104,8 @@ export default {
         displayName: null,
         userPassword: null,
         confirmPassword: null,
-        memberOfs: []
+        memberOfs: [],
+        sshPublicKeys: []
       },
       sending: false
     };
@@ -128,9 +128,9 @@ export default {
       confirmPassword: {
         required,
         minLength: minLength(3),
-        sameAsPassword: sameAs('userPassword')
+        sameAsPassword: sameAs("userPassword")
       }
-    },
+    }
   },
   computed: {
     alert() {
@@ -147,10 +147,9 @@ export default {
 
       if (this.alert.type == null) {
         Vue.$log.debug("Nothing in alert");
-      }
-      else {
-        if (this.alert.type == 'success') {
-          this.confirmPassword = null;
+      } else {
+        if (this.alert.type == "success") {
+          this.user.confirmPassword = null;
           this.user.cn = null;
           this.user.mail = null;
           this.user.givenName = null;
@@ -159,15 +158,15 @@ export default {
           this.user.userPassword = null;
         }
         this.notifyVue(this.alert.type, this.alert.message);
-        this.$store.dispatch('alert/clear');
+        this.$store.dispatch("alert/clear");
       }
     }
   },
-  created () {
-    this.$store.dispatch('alert/clear');
+  created() {
+    this.$store.dispatch("alert/clear");
   },
   methods: {
-      getValidationClass (fieldName) {
+    getValidationClass(fieldName) {
       Vue.$log.debug("Enter");
       Vue.$log.debug("fieldName: " + fieldName);
 
@@ -177,13 +176,13 @@ export default {
 
       if (field) {
         return {
-          'md-invalid': field.$invalid && field.$dirty
-        }
+          "md-invalid": field.$invalid && field.$dirty
+        };
       }
     },
     displayName() {
-      var fn = this.user.givenName === null ? '' : this.user.givenName;
-      var ln = this.user.sn === null ? '' : this.user.sn;
+      var fn = this.user.givenName === null ? "" : this.user.givenName;
+      var ln = this.user.sn === null ? "" : this.user.sn;
       this.user.displayName = fn + " " + ln;
     },
     add() {
@@ -193,24 +192,22 @@ export default {
 
       if (this.$v.$invalid) {
         Vue.$log.debug("Validation Errors");
-      }
-      else {
+      } else {
         this.sending = true;
-        this.$emit('add-user', this.user);
+        this.$emit("add-user", this.user);
+        this.sending = false;
       }
     },
     notifyVue(type, msg) {
       Vue.$log.debug("Enter");
 
       this.$notify({
-        message:
-          msg,
-        horizontalAlign: 'center',
-        verticalAlign: 'top',
+        message: msg,
+        horizontalAlign: "center",
+        verticalAlign: "top",
         type: type
       });
-    } 
-
+    }
   }
 };
 </script>

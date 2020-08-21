@@ -56,8 +56,11 @@ function updateGroup(group) {
     return axios.put(process.env.VUE_APP_API_URL + '/groups/' + group.cn, group.changes, config)
         .then(response => {
             Vue.$log.debug(response);
-            const group = response.data;
-            return group;
+            const group = {};
+            if (response.data.length > 0) {
+                this.group = response.data[0];
+            }
+            return this.group;
         })
         .catch(err => {
             Vue.$log.error("updategroup Failure: ");
@@ -128,8 +131,11 @@ function createGroup(group) {
     return axios.post(process.env.VUE_APP_API_URL + '/groups', group, config)
         .then(response => {
             Vue.$log.debug(response);
-            const group = response.data;
-            return group;
+            const group = {};
+            if (response.data.length > 0) {
+                this.group = response.data[0];
+            }
+            return this.group;
         })
         .catch(err => {
             Vue.$log.error("creategroup Failure: ");

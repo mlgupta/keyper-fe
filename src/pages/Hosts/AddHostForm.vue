@@ -15,21 +15,16 @@
               <span class="md-error" v-if="!$v.host.cn.required">Host name is required</span>
               <span class="md-error" v-else-if="!$v.host.cn.minlength">Invalid Host Name</span>
             </md-field>
-          </div>      
+          </div>
           <div class="md-layout-item md-size-100">
-            <md-field maxlength="5">
+            <md-field maxlength="5" :class="getValidationClass('description')">
               <label>Description</label>
               <md-textarea v-model="host.description"></md-textarea>
+              <span class="md-error" v-if="!$v.host.description.required">Description is required</span>
+              <span class="md-error" v-else-if="!$v.host.description.minlength">Invalid Description</span>
+              <span class="md-error" v-else-if="!$v.host.description.maxlength">Invalid Description</span>
             </md-field>
-          </div>    
-          <div class="md-layout-item md-size-100">
-              <md-field>
-                  <label>Owners</label>
-                  <multiselect v-model="host.owners" :options="users" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Owners">                    
-                  </multiselect>
-              </md-field>
-          </div>         
-          
+          </div>
           <div class="md-layout-item md-size-100 text-right">
             <md-button type="submit" class="md-raised md-success" :disabled="sending">Add</md-button>
           </div>
@@ -40,31 +35,26 @@
 </template>
 <script>
 import Vue from "vue";
-import { validationMixin } from 'vuelidate';
-import { required, minLength, maxLength } from 'vuelidate/lib/validators';
-import Multiselect from 'vue-multiselect';
+import { validationMixin } from "vuelidate";
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default {
-  components: {
-    Multiselect
-  },
   name: "add-host-form",
-  mixins: [validationMixin],  
+  mixins: [validationMixin],
   props: {
     dataBackgroundColor: {
       type: String,
       default: ""
     },
     users: {
-        type: Array
+      type: Array
     }
-  },  
+  },
   data() {
-    return {      
+    return {
       host: {
         cn: null,
-        description: null,        
-        owners: []
+        description: null
       },
 
       sending: false
@@ -75,6 +65,11 @@ export default {
       cn: {
         required,
         minLength: minLength(3)
+      },
+      description: {
+        required,
+        minLength: minLength(3),
+        maxLength: maxLength(1000)
       }
     }
   },
@@ -84,7 +79,7 @@ export default {
     },
     alertMsg() {
       return this.$store.state.alert.message;
-    },
+    }
   },
   watch: {
     alertMsg(newAlert) {
@@ -93,21 +88,21 @@ export default {
 
       if (this.alert.type == null) {
         Vue.$log.debug("Nothing in alert");
-      }
-      else {
-        if (this.alert.type == 'success') {          
-          this.host.cn = null;          
+      } else {
+        if (this.alert.type == "success") {
+          this.host.cn = null;
+          this.host.description = null;
         }
         this.notifyVue(this.alert.type, this.alert.message);
-        this.$store.dispatch('alert/clear');
+        this.$store.dispatch("alert/clear");
       }
     }
   },
-  created () {
-    this.$store.dispatch('alert/clear');
+  created() {
+    this.$store.dispatch("alert/clear");
   },
   methods: {
-      getValidationClass (fieldName) {
+    getValidationClass(fieldName) {
       Vue.$log.debug("Enter");
       Vue.$log.debug("fieldName: " + fieldName);
 
@@ -117,8 +112,8 @@ export default {
 
       if (field) {
         return {
-          'md-invalid': field.$invalid && field.$dirty
-        }
+          "md-invalid": field.$invalid && field.$dirty
+        };
       }
     },
     add() {
@@ -128,22 +123,22 @@ export default {
 
       if (!this.$v.$invalid) {
         this.sending = true;
-        this.$emit('add-host', this.host);
+        this.$emit("add-host", this.host);
+        this.sending = false;
       }
     },
     notifyVue(type, msg) {
       Vue.$log.debug("Enter");
 
       this.$notify({
-        message:
-          msg,
-        horizontalAlign: 'center',
-        verticalAlign: 'top',
+        message: msg,
+        horizontalAlign: "center",
+        verticalAlign: "top",
         type: type
       });
-    } 
-
+    }
   }
 };
 </script>
+
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

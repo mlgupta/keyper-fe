@@ -14,7 +14,6 @@
           </md-card-content>
         </md-card>
       </div>
-
     </div>
   </div>
 </template>
@@ -39,7 +38,9 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('userStore/getUsers');
+    this.$store.dispatch("userStore/getUsers");
+    this.$store.dispatch("groupStore/getGroups");
+    this.$store.dispatch("hostStore/getHosts");
   },
   methods: {
     deleteUser(userList) {
@@ -49,11 +50,9 @@ export default {
       userList.forEach(element => {
         var userDel = {};
         userDel.cn = element;
-        Vue.$log.debug("element to del: " + JSON.stringify(userDel) );
-        this.$store.dispatch('userStore/deleteUser', { userDel } );
+        Vue.$log.debug("element to del: " + JSON.stringify(userDel));
+        this.$store.dispatch("userStore/deleteUser", { userDel });
       });
-
-
     }
   }
 };

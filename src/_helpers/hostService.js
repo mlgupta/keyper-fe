@@ -57,8 +57,12 @@ function updateHost(host) {
     return axios.put(process.env.VUE_APP_API_URL + '/hosts/' + host.cn, host.changes, config)
         .then(response => {
             Vue.$log.debug(response);
-            const host = response.data;
-            return host;
+            const host = {};
+            if (response.data.length > 0) {
+                this.host = response.data[0];
+            }
+
+            return this.host;
         })
         .catch(err => {
             Vue.$log.error("updateHost Failure: ");
@@ -129,8 +133,12 @@ function createHost(host) {
     return axios.post(process.env.VUE_APP_API_URL + '/hosts', host, config)
         .then(response => {
             Vue.$log.debug(response);
-            const host = response.data;
-            return host;
+            const host = {};
+            if (response.data.length > 0) {
+                this.host = response.data[0];
+            }
+
+            return this.host;
         })
         .catch(err => {
             Vue.$log.error("createHost Failure: ");

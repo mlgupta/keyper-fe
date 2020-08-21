@@ -32,6 +32,7 @@ export const groupStore = {
                     upd_group => {
                         commit('updateGroupSuccess', upd_group);
                         dispatch('alert/success', "Group Saved", { root: true });
+                        dispatch('getGroups');
                     },
                     error => {
                         commit('updateGroupFailure', error)
@@ -46,6 +47,7 @@ export const groupStore = {
                     group => {
                         commit('deleteGroupSuccess', group);
                         dispatch('alert/success', "Group(s) Deleted", { root: true });
+                        dispatch('getGroups');
                     },
                     error => {
                         commit('deleteGroupFailure', error)
@@ -62,6 +64,7 @@ export const groupStore = {
                     add_group => {
                         commit('createGroupSuccess', add_group)
                         dispatch('alert/success', "Group Added", { root: true });
+                        dispatch('getGroups');
                     },
                     error => {
                         commit('createGroupFailure', error);

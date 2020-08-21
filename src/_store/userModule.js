@@ -1,4 +1,4 @@
-import { userService } from '../_helpers';
+import { userService } from "../_helpers";
 import Vue from "vue";
 
 export const userStore = {
@@ -32,6 +32,7 @@ export const userStore = {
                     upd_user => {
                         commit('updateUserSuccess', upd_user);
                         dispatch('alert/success', "User Saved", { root: true });
+                        dispatch('getUsers');
                     },
                     error => {
                         commit('updateUserFailure', error)
@@ -46,6 +47,7 @@ export const userStore = {
                     user => {
                         commit('deleteUserSuccess', user);
                         dispatch('alert/success', "User(s) Deleted", { root: true });
+                        dispatch('getUsers');
                     },
                     error => {
                         commit('deleteUserFailure', error)
@@ -62,6 +64,7 @@ export const userStore = {
                     add_user => {
                         commit('createUserSuccess', add_user)
                         dispatch('alert/success', "User Added", { root: true });
+                        dispatch('getUsers');
                     },
                     error => {
                         commit('createUserFailure', error);
@@ -74,7 +77,6 @@ export const userStore = {
             commit('resetUsers');
         },
     },
-
     mutations: {
         getUsers(state) {
             Vue.$log.debug("getUsers Enter")
@@ -109,10 +111,10 @@ export const userStore = {
 
             if (index > -1 ) {
                 state.all.splice(index,1);
-            } 
+            }
         },
         deleteUserFailure(state, error) {
-            Vue.$log.error("updateUsersFailure Enter")
+            Vue.$log.error("updateUsersFailure Enter");
         },
         createUserSuccess(state, user) {
             Vue.$log.debug("Enter");
@@ -123,8 +125,8 @@ export const userStore = {
             Vue.$log.error("Enter")
         },
         resetUsers(state) {
-            Vue.$log.debug("Enter")
+            Vue.$log.debug("Enter");
             state.all = [];
-        },
+        }
     }
-}
+};

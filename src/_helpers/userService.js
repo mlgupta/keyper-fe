@@ -57,8 +57,11 @@ function updateUser(user) {
     return axios.put(process.env.VUE_APP_API_URL + '/users/' + user.id, user.changes, config)
         .then(response => {
             Vue.$log.debug(response);
-            const user = response.data;
-            return user;
+            const user = {};
+            if (response.data.length > 0) {
+                this.user = response.data[0];
+            }
+            return this.user;
         })
         .catch(err => {
             Vue.$log.error("updateUser Failure: ");
@@ -129,8 +132,11 @@ function createUser(user) {
     return axios.post(process.env.VUE_APP_API_URL + '/users', user, config)
         .then(response => {
             Vue.$log.debug(response);
-            const user = response.data;
-            return user;
+            const user = {};
+            if (response.data.length > 0) {
+                this.user = response.data[0];
+            }
+            return this.user;
         })
         .catch(err => {
             Vue.$log.error("createUser Failure: ");

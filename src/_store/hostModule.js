@@ -32,6 +32,7 @@ export const hostStore = {
                     upd_host => {
                         commit('updateHostSuccess', upd_host);
                         dispatch('alert/success', "Host Saved", { root: true });
+                        dispatch('getHosts');
                     },
                     error => {
                         commit('updateHostFailure', error)
@@ -46,6 +47,7 @@ export const hostStore = {
                     host => {
                         commit('deleteHostSuccess', host);
                         dispatch('alert/success', "Host(s) Deleted", { root: true });
+                        dispatch('getHosts');
                     },
                     error => {
                         commit('deleteHostFailure', error)
@@ -62,6 +64,7 @@ export const hostStore = {
                     add_host => {
                         commit('createHostSuccess', add_host)
                         dispatch('alert/success', "Host Added", { root: true });
+                        dispatch('getHosts');
                     },
                     error => {
                         commit('createHostFailure', error);
