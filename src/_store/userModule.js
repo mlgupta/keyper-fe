@@ -96,6 +96,8 @@ export const userStore = {
             Vue.$log.debug("user: " + JSON.stringify(user));
             const index = state.all.findIndex((stateUser) => stateUser.cn === user.cn);
             state.all[index] = user.changes;
+            // Vue.set(vm.items, indexOfItem, newValue)
+            Vue.set(state.all, index, user.changes);
         },
         updateUserFailure(state, error) {
             Vue.$log.error("updateUsersFailure Enter")
