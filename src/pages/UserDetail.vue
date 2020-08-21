@@ -46,7 +46,7 @@ export default {
         Vue.$log.debug("userId: " + userId);
         Vue.$log.debug("changes: " + JSON.stringify(changes));
         var user={};
-        user.id = userId;
+        user.cn = userId;
         user.changes = changes;
         this.$store.dispatch('userStore/updateUser', { user } );
     }
