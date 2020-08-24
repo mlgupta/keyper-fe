@@ -49,8 +49,8 @@ export default {
   computed: {
     userProfile() {
       var uid = this.$store.state.authentication.user.cn;      
-      var url = "/admin/userdetail/" + uid;
-      return url;
+      var route = { name: "Profile", params: { id: uid }};
+      return route;
     }
   }
 };

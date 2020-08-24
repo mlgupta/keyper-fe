@@ -25,14 +25,26 @@ export const userStore = {
                     }
                 );
         },
+        getUser({ dispatch, commit }, { userGet }) {
+            commit('getUser');
+
+            userService.getUser(userGet)
+                .then(
+                    user => commit('getUserSuccess', user),
+                    error => {
+                        commit('getUserFailure', error)
+                        dispatch('alert/danger', "Error getting User", { root: true });
+                    }
+                );
+        },
         updateUser({ dispatch, commit }, { user }) {
             Vue.$log.debug("In updateUser: " + JSON.stringify(user));
             userService.updateUser(user)
                 .then(
                     upd_user => {
+                        Vue.$log.debug("upd_user: " + JSON.stringify(upd_user));
                         commit('updateUserSuccess', upd_user);
                         dispatch('alert/success', "User Saved", { root: true });
-                        dispatch('getUsers');
                     },
                     error => {
                         commit('updateUserFailure', error)
@@ -91,13 +103,24 @@ export const userStore = {
 
             state.all = { error };
         },
+        getUser(state) {
+            Vue.$log.debug("getUser Enter")
+            state.all = [];
+        },
+        getUserSuccess(state, user) {
+            Vue.$log.debug("getUserSuccess Enter")
+            state.all =  user ;
+        },
+        getUsersFailure(state, error) {
+            Vue.$log.debug("getUserFailure Enter")
+
+            state.all = { error };
+        },
         updateUserSuccess(state, user) {
             Vue.$log.debug("updateUsersSuccess Enter");
             Vue.$log.debug("user: " + JSON.stringify(user));
             const index = state.all.findIndex((stateUser) => stateUser.cn === user.cn);
-            state.all[index] = user.changes;
-            // Vue.set(vm.items, indexOfItem, newValue)
-            Vue.set(state.all, index, user.changes);
+            state.all[index] = user;
         },
         updateUserFailure(state, error) {
             Vue.$log.error("updateUsersFailure Enter")

@@ -32,7 +32,6 @@ export const groupStore = {
                     upd_group => {
                         commit('updateGroupSuccess', upd_group);
                         dispatch('alert/success', "Group Saved", { root: true });
-                        dispatch('getGroups');
                     },
                     error => {
                         commit('updateGroupFailure', error)

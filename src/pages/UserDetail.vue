@@ -5,20 +5,18 @@
 </template>
 
 <script>
-// import { EditUserForm } from "@/pages";
 import { UserCard } from "@/pages";
 import Vue from "vue";
 
 export default {
   components: {
-    // EditUserForm
     UserCard
   },
   computed: {
     user() {
-      Vue.$log.debug("Here in one User");
+      Vue.$log.debug("In userDetail");
       Vue.$log.debug(this.$route.params.id);
-      var user = this.$store.getters['userStore/getUserById'](this.$route.params.id);
+      var user = this.$store.state.authentication.user;
       var new_user = user;
       var memberOfs = [];
       if ("memberOfs" in user) {
@@ -46,8 +44,9 @@ export default {
       Vue.$log.debug("userId: " + userId);
       Vue.$log.debug("changes: " + JSON.stringify(changes));
       var user = {};
-      user.cn = userId;
+      user.id = userId;
       user.changes = changes;
+      this.$store.dispatch("authentication/updateUser", { user });
       this.$store.dispatch("userStore/updateUser", { user });
     }
   }

@@ -21,6 +21,7 @@ export default {
       Vue.$log.debug("Here in one User");
       Vue.$log.debug(this.$route.params.id);
       var user = this.$store.getters["userStore/getUserById"](this.$route.params.id);
+      Vue.$log.debug(JSON.stringify(user));
       //var new_user = user;
       var memberOfs = [];
       if ("memberOfs" in user) {
@@ -75,7 +76,7 @@ export default {
         changes.memberOfs = changes.memberOfs.map(val => val.dn);
       }
       var user = {};
-      user.cn = userId;
+      user.id = userId;
       user.changes = changes;
       this.$store.dispatch("userStore/updateUser", { user });
       Vue.nextTick();

@@ -1,5 +1,6 @@
 import { authService } from '../_helpers';
 import { router } from '../_helpers';
+import { store } from '@/_store'
 import Vue from "vue";
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -17,14 +18,14 @@ export const authentication = {
                     user => {
                         Vue.$log.debug("Login succesful");
                         commit('loginSuccess', user);                        
-                        router.push('/admin/users');
+                        //router.push('/admin/users');
+                        router.push({ name: "Home" });
                     },
                     error => {
                         Vue.$log.debug("Login Error: " + error);
                         commit('loginFailure', error);
                         dispatch('alert/error', error, { root: true });
                     }
-
                 );
         },
         logout({ commit }) {
@@ -51,7 +52,10 @@ export const authentication = {
                 );
             })
         },
-
+        updateUser({ dispatch, commit }, { user }) {
+            Vue.$log.debug("In updateUser authModule: " + JSON.stringify(user));
+            commit('updateUserSuccess', user)
+        },
     },
     mutations: {
         loginRequest(state, user) {
@@ -77,6 +81,16 @@ export const authentication = {
         refreshJWTFailure(state) {
             state.status = {};
             state.user = null;
+        },
+        updateUserSuccess(state, user) {
+            Vue.$log.debug("authmodule updateUsersSuccess Enter");
+            Vue.$log.debug("user: " + JSON.stringify(user));
+
+            var changes = user.changes;
+
+            for (let key in changes) {
+                state.user[key] = changes[key];
+            }
         },
     }
 }

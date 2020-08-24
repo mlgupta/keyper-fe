@@ -8,14 +8,6 @@
             <md-tab id="tab-home" md-label="User">
               <form novalidate @submit.prevent="update">
                 <div class="md-layout">
-                  <div class="md-layout-item md-size-100">
-                    <label>Account Status:</label>
-                    <md-icon v-if="user.accountLocked" title="Locked">lock</md-icon>
-                    <md-icon v-else title="UnLocked">lock_open</md-icon>
-                    <md-field>
-                      <md-switch v-model="user.accountLocked" @change="value => handleChange(value, 'accountLocked')"></md-switch>
-                    </md-field>
-                  </div>
                   <div class="md-layout-item md-small-size-100 md-size-50">
                     <md-field>
                       <label>User Name (disabled)</label>
@@ -70,6 +62,18 @@
                       <span class="md-error" v-if="!$v.confirmPassword.sameAs">Passwords must be same</span>
                     </md-field>
                   </div>
+                  <div class="md-layout-item md-small-size-100 md-size-50">
+                      <md-switch v-model="accountLocked" @change="value => handleChange(value, 'accountLocked')">
+                        <div v-if="accountLocked">
+                          Account is Locked
+                          <md-icon title="Locked">lock</md-icon>
+                        </div>
+                        <div v-else>
+                          Account is Active
+                          <md-icon title="UnLocked">lock_open</md-icon>
+                        </div>    
+                      </md-switch>
+                  </div>
                   <div class="md-layout-item md-size-100 text-right">
                     <md-button type="submit" class="md-raised md-success" :disabled="sending">Update</md-button>
                   </div>
@@ -90,7 +94,7 @@
                       <md-table-head>Expiration</md-table-head>
                       <md-table-head>Hosts</md-table-head>
                     </md-table-row>
-                    <md-table-row v-for="item in user.sshPublicKeys" :key="item">
+                    <md-table-row v-for="item in user.sshPublicKeys" :key="item.key">
                       <md-table-cell>
                         <v-clamp autoresize :max-lines="1">{{ item.key }}</v-clamp>
                       </md-table-cell>
@@ -161,6 +165,7 @@ export default {
       confirmPassword: "*****",
       mail: this.user.mail,
       value: this.user.memberOfs,
+      accountLocked: this.user.accountLocked,
       sending: false
     };
   },

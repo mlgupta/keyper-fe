@@ -32,7 +32,6 @@ export const hostStore = {
                     upd_host => {
                         commit('updateHostSuccess', upd_host);
                         dispatch('alert/success', "Host Saved", { root: true });
-                        dispatch('getHosts');
                     },
                     error => {
                         commit('updateHostFailure', error)

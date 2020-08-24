@@ -14,16 +14,6 @@
                 <md-tab id="tab-home" md-label="User">
                   <form>
                     <div class="md-layout">
-                      <div class="md-layout-item md-size-100" md-alignment="left">
-                        <label md-alignment="left">Account Status: </label>
-                        <br />
-                        <div v-if="user.accountLocked">
-                          <md-icon>lock</md-icon>
-                        </div>
-                        <div v-else>
-                          <md-icon>lock_open</md-icon>
-                        </div>
-                      </div>
                       <div class="md-layout-item md-small-size-100 md-size-50">
                         <md-field>
                           <label>User Name (disabled)</label>
@@ -64,12 +54,6 @@
                         <md-field>
                           <label>Confirm Password</label>
                           <md-input v-model="confirmPassword" type="password"></md-input>
-                        </md-field>
-                      </div>
-                      <div class="md-layout-item md-size-100">
-                        <label>Groups</label>
-                        <md-field>
-                          {{ showGroups(user.memberOfs) }}
                         </md-field>
                       </div>
                       <div class="md-layout-item md-size-100 text-right">
@@ -214,7 +198,7 @@ export default {
       return userGroups;
     },
     dateExpire: function(date) {
-      Vue.$log.debug(date);
+      Vue.$log.debug("Enter");
       var year = date.substring(0, 4);
       var month = date.substring(4, 6);
       var day = date.substring(6, 8);

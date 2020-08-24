@@ -4,6 +4,7 @@ import axios from "axios";
 
 export const userService = {
     getUsers,
+    getUser,
     createUser,
     updateUser,
     deleteUser
@@ -26,6 +27,43 @@ function getUsers() {
         })
         .catch(err => {
             Vue.$log.error("getUsers Failure: ");
+
+            var error = '';
+
+            if (err.response) {
+                Vue.$log.error("err.response: " + JSON.stringify(err.response));
+                error = err.response.data.msg;
+            }
+            else if (err.request) {
+                Vue.$log.error("err.request: " + err.request);
+                error = err.request
+            }
+            else {
+                Vue.$log.error("err.message: " + err.message);
+                error = err.message;
+            }
+            Vue.$log.debug("error: " + error);
+            return Promise.reject(error);
+        });
+}
+
+function getUser(user) {
+    Vue.$log.debug("Enter");
+
+    const config = {
+        headers: authHeader()
+    }
+    
+    Vue.$log.debug("Header: " + JSON.stringify(config));
+    Vue.$log.debug("user: " + JSON.stringify(user));
+
+    return axios.get(process.env.VUE_APP_API_URL + '/users/' + user.cn, config)
+        .then(response => {
+            const users = response.data;
+            return users;
+        })
+        .catch(err => {
+            Vue.$log.error("getUser Failure: ");
 
             var error = '';
 
