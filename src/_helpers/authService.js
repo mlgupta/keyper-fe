@@ -54,14 +54,13 @@ function refreshJWT() {
     const config = {
         headers: refreshAuthHeader()
     }
-    
-    Vue.$log.debug("Header: " + JSON.stringify(config));
     Vue.$log.debug("Getting JWT Refresh Token");
     return axios.post(process.env.VUE_APP_API_URL + "/refresh", {}, config)
         .then(response => {
-            const access_token = response.data.access_token;
+            Vue.$log.debug("Got new Refresh Token");
             const user = JSON.parse(localStorage.getItem('user'));
 
+            const access_token = response.data.access_token;
             if (access_token) {
                 user.access_token = access_token;
                 Vue.$log.debug("Saving user data to local storage");
@@ -89,5 +88,18 @@ function refreshJWT() {
             Vue.$log.debug("error: " + error);
             return Promise.reject(error);
         });
+   /*
+   const response = await axios.post(process.env.VUE_APP_API_URL + "/refresh", {}, config);
+   Vue.$log.debug("Got new Refresh Token");
+   const user = JSON.parse(localStorage.getItem('user'));
+
+   const access_token = response.data.access_token;
+   if (access_token) {
+       user.access_token = access_token;
+       Vue.$log.debug("Saving user data to local storage");
+       localStorage.setItem('user', JSON.stringify(user));
+   }
+   return access_token;
+   */
 }
 

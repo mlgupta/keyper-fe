@@ -2,6 +2,7 @@ import VueRouter from "vue-router";
 import Vue from "vue";
 import { store } from '@/_store'
 import { isValidJwt, getUserClaims } from "@/_helpers";
+import { authService } from '@/_helpers';
 
 import DashboardLayout from "@/pages/Layout/DashboardLayout.vue";
 import LoginLayout from "@/pages/Layout/LoginLayout.vue";
@@ -201,17 +202,33 @@ router.beforeEach((to, from, next) => {
         }
       }
       else {
-        Vue.$log.debug("JWT Token Expired. Lets see if we can refresh");
+        Vue.$log.debug("JWT Token Expired. Sending user to login");
+        /*
         store.dispatch('authentication/refreshJWT').then(response => {
           return next();
         }, error => {
           Vue.$log.debug("Token refresh Error");
           return next({ name: "Login" });
         });
+       authService.refreshJWT()
+       .then(
+           access_token => {
+               Vue.$log.debug("refresh JWT succesful");
+               return next();
+           },
+           error => {
+               Vue.$log.error("JWT Refresh Error: " + error);
+               dispatch('authentication/logout');
+               dispatch('alert/error', error, { root: true });
+               return next({ name: "Login" });
+           }
+       );
+        */
+       return next({ name: "Login" });
       }
     }
     else {
-      return next('/login');
+      return next({ name: "Login" });
     }
   }
   next();

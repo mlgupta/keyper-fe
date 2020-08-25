@@ -12,7 +12,7 @@
             <template slot="content">
               <md-tabs class="md-success" md-alignment="left">
                 <md-tab id="tab-home" md-label="User">
-                  <form>
+                  <form novalidate @submit.prevent="update">
                     <div class="md-layout">
                       <div class="md-layout-item md-small-size-100 md-size-50">
                         <md-field>
@@ -21,9 +21,11 @@
                         </md-field>
                       </div>
                       <div class="md-layout-item md-small-size-100 md-size-50">
-                        <md-field>
+                        <md-field :class="getValidationClass('mail')">
                           <label>Email Address</label>
-                          <md-input name="mail" :value="user.mail" type="email" @input="handleChange($event, 'mail')"></md-input>
+                          <md-input v-model="mail" type="email" @input="handleChange($event, 'mail')" :disabled="sending"></md-input>
+                          <span class="md-error" v-if="!$v.mail.required">Email is required</span>
+                          <span class="md-error" v-else-if="!$v.mail.minlength">Invalid Email</span>
                         </md-field>
                       </div>
                       <div class="md-layout-item md-small-size-100 md-size-50">
@@ -45,19 +47,22 @@
                         </md-field>
                       </div>
                       <div class="md-layout-item md-small-size-100 md-size-50">
-                        <md-field>
+                        <md-field :class="getValidationClass('userPassword')">
                           <label>Password</label>
-                          <md-input v-model="password" type="password" @input="handleChange($event, 'password')"></md-input>
+                          <md-input v-model="userPassword" type="password" @input="handleChange($event, 'userPassword')" :disabled="sending"></md-input>
+                          <span class="md-error" v-if="!$v.userPassword.required">Password is required</span>
+                          <span class="md-error" v-else-if="!$v.userPassword.minlength">Invalid Password</span>
                         </md-field>
                       </div>
                       <div class="md-layout-item md-small-size-100 md-size-50">
-                        <md-field>
+                        <md-field :class="getValidationClass('confirmPassword')">
                           <label>Confirm Password</label>
-                          <md-input v-model="confirmPassword" type="password"></md-input>
+                          <md-input v-model="confirmPassword" @input="handleChange($event, 'confirmPassword')" type="password" :disabled="sending"></md-input>
+                          <span class="md-error" v-if="!$v.confirmPassword.sameAs">Passwords must be same</span>
                         </md-field>
                       </div>
                       <div class="md-layout-item md-size-100 text-right">
-                        <md-button class="md-raised md-success" @click="update">Update</md-button>
+                        <md-button type="submit" class="md-raised md-success" :disabled="sending">Update</md-button>
                       </div>
                     </div>
                   </form>
@@ -75,7 +80,7 @@
                           <md-table-head>Expiration</md-table-head>
                           <md-table-head>Hosts</md-table-head>
                         </md-table-row>
-                        <md-table-row v-for="item in user.sshPublicKeys" :key="item" class="text-left">
+                        <md-table-row v-for="item in user.sshPublicKeys" :key="item.key" class="text-left">
                           <md-table-cell>
                             <v-clamp autoresize :max-lines="1"> {{ item.key }} </v-clamp>
                           </md-table-cell>
@@ -111,7 +116,7 @@
 <script>
 import Vue from "vue";
 import { validationMixin } from "vuelidate";
-import { required, minLength, maxLength } from "vuelidate/lib/validators";
+import { required, minLength, maxLength, email, sameAs } from "vuelidate/lib/validators";
 import VClamp from "vue-clamp";
 import { AddUserKeyModal } from "@/components";
 import { NavTabsCard } from "@/components";
@@ -134,23 +139,26 @@ export default {
     }
   },
   validations: {
-    user: {
-      mail: {
-        required,
-        minLength: minLength(3)
-      },
-      userPassword: {
-        required,
-        minLength: minLength(3)
-      }
+    mail: {
+      required,
+      email,
+      minLength: minLength(3)
+    },
+    userPassword: {
+      minLength: minLength(3)
+    },
+    confirmPassword: {
+      sameAsPassword: sameAs("userPassword")
     }
   },
   data() {
     return {
       changes: {},
-      password: null,
-      confirmPassword: null,
-      value: this.user.memberOfs
+      mail: this.user.mail,
+      userPassword: "*****",
+      confirmPassword: "*****",
+      value: this.user.memberOfs,
+      sending: false
     };
   },
   computed: {
@@ -189,6 +197,20 @@ export default {
     this.$store.dispatch("alert/clear");
   },
   methods: {
+    getValidationClass(fieldName) {
+      Vue.$log.debug("Enter");
+      Vue.$log.debug("fieldName: " + fieldName);
+
+      const field = this.$v[fieldName];
+      Vue.$log.debug("field: " + JSON.stringify(field));
+      Vue.$log.debug("md-invalid: " + field.$invalid && field.$dirty);
+
+      if (field) {
+        return {
+          "md-invalid": field.$invalid && field.$dirty
+        };
+      }
+    },
     displayHosts: function(hosts) {
       var displayHost = hosts.map(val => val.split(",")[0].split("=")[1]).join(", ");
       return displayHost;
@@ -215,11 +237,20 @@ export default {
     },
     update() {
       Vue.$log.debug("Enter");
+      Vue.$log.debug("Changes: " + JSON.stringify(this.changes));
 
-      if (JSON.stringify(this.changes) == JSON.stringify({})) {
-        Vue.$log.debug("No changes. Ignore click");
+      this.$v.$touch();
+
+      if (this.$v.$invalid) {
+        Vue.$log.debug("Validation Errors");
       } else {
-        this.$emit("update-user", this.changes);
+        if (JSON.stringify(this.changes) == JSON.stringify({})) {
+          Vue.$log.debug("No changes. Ignore click");
+        } else {
+          this.sending = true;
+          this.$emit("update-user", this.changes);
+          this.sending = false;
+        }
       }
     },
     notifyVue(type, msg) {

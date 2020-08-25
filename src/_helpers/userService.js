@@ -91,6 +91,7 @@ function updateUser(user) {
     const config = {
         headers: authHeader()
     }
+    Vue.$log.debug("Header: " + JSON.stringify(config));
 
     return axios.put(process.env.VUE_APP_API_URL + '/users/' + user.id, user.changes, config)
         .then(response => {

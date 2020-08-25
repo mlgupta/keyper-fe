@@ -1,6 +1,5 @@
-import { authService } from '../_helpers';
-import { router } from '../_helpers';
-import { store } from '@/_store'
+import { authService } from '@/_helpers';
+import { router } from '@/_helpers';
 import Vue from "vue";
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -17,9 +16,19 @@ export const authentication = {
                 .then(
                     user => {
                         Vue.$log.debug("Login succesful");
-                        commit('loginSuccess', user);                        
-                        //router.push('/admin/users');
-                        router.push({ name: "Home" });
+                        commit('loginSuccess', user);
+                        Vue.$log.debug("JWT Refresh Interval: " + process.env.VUE_APP_JWT_REFRESH_INTERVAL);
+                        var intervalId = setInterval(function() {
+                            dispatch('refreshJWT')
+                                .then(response => {
+                                    Vue.$log.debug("JWT Token Refreshed");
+                                }, error => {
+                                    Vue.$log.debug("Error refreshing token, sending user to login");
+                                    dispatch('logout');
+                                });
+                            }, process.env.VUE_APP_JWT_REFRESH_INTERVAL);
+                        commit('setIntervalSuccess', { intervalId: intervalId });
+                    router.push({ name: "Home" });
                     },
                     error => {
                         Vue.$log.debug("Login Error: " + error);
@@ -33,24 +42,20 @@ export const authentication = {
             commit('logout');
         },
         refreshJWT({ dispatch, commit }) {
-            return new Promise((resolve, reject) => {
-                authService.refreshJWT()
+            authService.refreshJWT()
                 .then(
                     access_token => {
                         Vue.$log.debug("refresh JWT succesful");
-                        commit('refreshJWTSuccess', access_token);                        
-                        resolve(access_token)
+                        commit('refreshJWTSuccess', access_token);
+                        return access_token;
                     },
                     error => {
                         Vue.$log.error("JWT Refresh Error: " + error);
                         commit('refreshJWTFailure', error);
                         dispatch('authentication/logout');
                         dispatch('alert/error', error, { root: true });
-                        reject(error);
                     }
-
                 );
-            })
         },
         updateUser({ dispatch, commit }, { user }) {
             Vue.$log.debug("In updateUser authModule: " + JSON.stringify(user));
@@ -70,12 +75,18 @@ export const authentication = {
             state.status = {};
             state.user = null;
         },
+        setIntervalSuccess(state, interval) {
+            state.status.intervalId =  interval.intervalId ;
+        },
         logout(state) {
+            Vue.$log.debug("Clearing interval");
+            clearInterval(state.status.intervalId);
+            Vue.$log.debug("Clearing state");
             state.status = {};
             state.user = null;
         },
         refreshJWTSuccess(state, access_token) {
-            state.status = { loggedIn: true };
+            state.status.loggedIn =  true ;
             state.user.access_token = access_token;
         },
         refreshJWTFailure(state) {
@@ -93,4 +104,4 @@ export const authentication = {
             }
         },
     }
-}
+};
