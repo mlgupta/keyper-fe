@@ -46,11 +46,13 @@ export default {
   },
   methods: {
     addHost(host) {
-        
-        Vue.$log.debug("Enter");        
+
+        Vue.$log.debug("Enter");
+        /*
         if (host.owners != []){
           host.owners = host.owners.map(val => val.dn);
         }
+        */
         Vue.$log.debug("host: " + JSON.stringify(host));
         this.$store.dispatch('hostStore/addHost', { host } );
         this.$router.push("/admin/hosts");

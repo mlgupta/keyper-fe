@@ -41,9 +41,11 @@
                     </md-field>
                   </div>
                   <div class="md-layout-item md-small-size-100 md-size-50">
-                    <md-field>
+                    <md-field  :class="getValidationClass('sn')">
                       <label>Last Name</label>
-                      <md-input :value="user.sn" type="text" @input="handleChange($event, 'sn')"></md-input>
+                      <md-input v-model="sn" type="text" @input="handleChange($event, 'sn')"></md-input>
+                      <span class="md-error" v-if="!$v.sn.required">Lastname is required</span>
+                      <span class="md-error" v-else-if="!$v.sn.minlength">Invalid Lastname</span>
                     </md-field>
                   </div>
                   <div class="md-layout-item md-small-size-100 md-size-100">
@@ -55,7 +57,7 @@
                   <div class="md-layout-item md-size-100">
                     <label>Groups</label>
                     <md-field>
-                      <multiselect :value=value @input="handleChange($event, 'memberOfs')" :options="groups" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Groups">
+                      <multiselect :value=memberOfs @input="handleChange($event, 'memberOfs')" :options="groups" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Groups">
                       </multiselect>
                     </md-field>
                   </div>
@@ -97,16 +99,16 @@
             <md-tab id="tab-keys" md-label="SSH Keys">
               <div class="md-layout-item md-size-100">
                 <div class="md-layout-item md-size 100">
-                  <add-user-key-modal :hosts="value" :user="user" class="text-right"></add-user-key-modal>
+                  <add-user-key-modal :hosts="memberOfs" :user="user" class="text-right"></add-user-key-modal>
                 </div>
                 <div v-if="hasKeys">
-                  <md-table v-model="user.sshPublicKeys">
+                  <md-table v-model="sshPublicKeys">
                     <md-table-row>
                       <md-table-head>Key</md-table-head>
                       <md-table-head>Expiration</md-table-head>
                       <md-table-head>Hosts</md-table-head>
                     </md-table-row>
-                    <md-table-row v-for="item in user.sshPublicKeys" :key="item.key">
+                    <md-table-row v-for="item in sshPublicKeys" :key="item.key">
                       <md-table-cell>
                         <v-clamp autoresize :max-lines="1">{{ item.key }}</v-clamp>
                       </md-table-cell>
@@ -126,7 +128,7 @@
                     md-icon="vpn_key"
                     md-label="Add Key"
                     md-description="Add key for the user.">
-                    <add-user-key-modal :hosts="value" :user="user" class="text-right"> </add-user-key-modal>
+                    <add-user-key-modal :hosts="memberOfs" :user="user" class="text-right"> </add-user-key-modal>
                   </md-empty-state>
                 </div>
               </div>
@@ -175,13 +177,19 @@ export default {
       changes: {},
       userPassword: "*****",
       confirmPassword: "*****",
+      sn: this.user.sn,
       mail: this.user.mail,
-      value: this.user.memberOfs,
+      memberOfs: this.user.memberOfs,
       accountLocked: this.user.accountLocked,
+      sshPublicKeys: this.user.sshPublicKeys,
       sending: false
     };
   },
   validations: {
+    sn: {
+      required,
+      minLength: minLength(1)
+    },
     mail: {
       required,
       email,
@@ -202,12 +210,8 @@ export default {
       return this.$store.state.alert.message;
     },
     hasKeys() {
-      if ("sshPublicKeys" in this.user) {
-        if (this.user.sshPublicKeys.length > 0) {
-          return true;
-        } else {
-          return false;
-        }
+      if (this.sshPublicKeys.length > 0) {
+        return true;
       } else {
         return false;
       }
@@ -236,7 +240,6 @@ export default {
 
       const field = this.$v[fieldName];
       Vue.$log.debug("field: " + JSON.stringify(field));
-      Vue.$log.debug("md-invalid: " + field.$invalid && field.$dirty);
 
       if (field) {
         return {
@@ -260,7 +263,7 @@ export default {
       Vue.$log.debug("event: " + e);
       Vue.$log.debug("id: " + id);
       if (id === "memberOfs") {
-        this.value = e;
+        this.memberOfs = e;
       }
       this.changes[id] = e;
     },
@@ -293,11 +296,9 @@ export default {
     },
     del(delKey) {
       Vue.$log.debug(delKey);
-      var keys = this.user.sshPublicKeys;
-      keys = keys.filter(key => key.key !== delKey);
-      this.user.sshPublicKeys = keys;
+      this.sshPublicKeys = this.sshPublicKeys.filter(key => key.key !== delKey);
       var changes = {};
-      changes.sshPublicKeys = this.user.sshPublicKeys;
+      changes.sshPublicKeys = this.sshPublicKeys;
       var user = {};
       user.id = this.user.cn;
       user.changes = changes;

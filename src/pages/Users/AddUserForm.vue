@@ -43,9 +43,11 @@
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
-            <md-field>
+            <md-field :class="getValidationClass('sn')">
               <label>Last Name</label>
               <md-input v-model="user.sn" @input="displayName()" type="text" :disabled="sending"></md-input>
+              <span class="md-error" v-if="!$v.user.sn.required">Lastname is required</span>
+              <span class="md-error" v-else-if="!$v.user.sn.minlength">Invalid Lastname</span>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-100">
@@ -127,6 +129,10 @@ export default {
       cn: {
         required,
         minLength: minLength(3)
+      },
+      sn: {
+        required,
+        minLength: minLength(1)
       },
       mail: {
         required,
