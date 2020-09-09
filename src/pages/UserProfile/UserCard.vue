@@ -88,13 +88,15 @@
                     <div v-if="hasKeys">
                       <md-table v-model="user.sshPublicKeys">
                         <md-table-row>
-                          <md-table-head>Key</md-table-head>
+                          <md-table-head>Name</md-table-head>
+                          <md-table-head>Key Fingerprint</md-table-head>
                           <md-table-head>Expiration</md-table-head>
                           <md-table-head>Hosts</md-table-head>
                         </md-table-row>
-                        <md-table-row v-for="item in user.sshPublicKeys" :key="item.key" class="text-left">
+                        <md-table-row v-for="item in user.sshPublicKeys" :key="item.name" class="text-left">
+                          <md-table-cell md-label="Name">{{ item.name }}</md-table-cell>
                           <md-table-cell>
-                            <v-clamp autoresize :max-lines="1"> {{ item.key }} </v-clamp>
+                            <v-clamp autoresize :max-lines="1"> {{ item.fingerprint }} </v-clamp>
                           </md-table-cell>
                           <md-table-cell md-label="Expiration"> {{ dateExpire(item.dateExpire) }} </md-table-cell>
                           <md-table-cell md-label='Hosts'> {{ displayHosts(item.hostGroups) }} </md-table-cell>
