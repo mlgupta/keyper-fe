@@ -40,10 +40,10 @@ export const authentication = {
                                 });
                             }, process.env.VUE_APP_JWT_REFRESH_INTERVAL);
                         commit('setIntervalSuccess', { intervalId: intervalId });
-                    router.push({ name: "Home" });
+                        router.push({ name: "Home" }).catch(e => {});
                     },
                     error => {
-                        Vue.$log.debug("Login Error: " + error);
+                        Vue.$log.error("Login Error: " + error);
                         commit('loginFailure', error);
                         dispatch('alert/error', error, { root: true });
                     }

@@ -33,7 +33,6 @@ import App from "./App";
 import { store } from "./_store";
 import { router } from "./_helpers";
 
-
 // router setup
 //import routes from "./routes/routes";
 
@@ -72,4 +71,3 @@ new Vue({
   store,
   render: h => h(App)
 });
-

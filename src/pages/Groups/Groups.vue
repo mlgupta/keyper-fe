@@ -22,6 +22,32 @@
           <md-card-content>
             <groups-table table-header-color="green" :groups="groups" v-on:delete-group="deleteGroup"></groups-table>
           </md-card-content>
+          <md-card-actions :class="'md-alignment-space-between'">
+            <div>
+              <p class="card-category">Showing {{from+1}} to {{endOfPage(to, groupCount)}} of {{groupCount}} entries</p>
+            </div>
+            <paginate 
+              :page-count="pageCount"
+              :click-handler="paginate"
+              :prev-text="'<<'"
+              :next-text="'>>'"
+              :container-class="'pagination pagination-no-border pagination-success pagination-primary list-nobull'">
+            </paginate>
+            <div>
+              <div class="md-layout md-gutter">
+                <div class="md-layout-item">
+                  <md-field>
+                    <label for="perPage">Per Page</label>
+                    <md-select v-model="perPage">
+                      <md-option value="20">20</md-option>
+                      <md-option value="50">50</md-option>
+                      <md-option value="100">100</md-option>
+                    </md-select>
+                  </md-field>
+                </div>
+              </div>
+            </div>
+          </md-card-actions>
         </md-card>
       </div>      
     </div>
@@ -36,14 +62,22 @@ export default {
   components: {    
     GroupsTable
   },
+  data() {
+    return {
+      page: 1,
+      perPage: 20,
+      from: 0,
+      to: 0
+    }
+  },
   computed: {
     group() {
       return this.$store.state.authentication.group;
     },
     groups() {
-      Vue.$log.debug("Here in groups");
-      // Vue.$log.debug(JSON.stringify(this.$store.state.groupStore.all));
-      var groups_json = this.$store.state.groupStore.all;
+      Vue.$log.debug("Get groups from store. From: " + this.from + " to: " + this.to);
+
+      var groups_json = this.$store.state.groupStore.all.slice(this.from, this.to);
       var groups_arr = []
       groups_json.forEach(element => {
         var group = {};
@@ -60,10 +94,25 @@ export default {
       Vue.$log.debug(groups_arr)
       // return this.$store.state.groupStore.all;
       return groups_arr;
+    },
+    pageCount() {
+      Vue.$log.debug("Here in pageCount");
+      return Math.ceil(this.groupCount/this.perPage);
+    },
+    groupCount() {
+      Vue.$log.debug("Here in groupCount");
+      return this.$store.state.groupStore.all.length;
+    },
+  },
+  watch: {
+    perPage() {
+      Vue.$log.debug("perPage changed");
+      this.paginate(1);
     }
   },
   created() {
     this.$store.dispatch('groupStore/getGroups');
+    this.to = this.perPage;
   },
   methods: {
     deleteGroup(groupList) {
@@ -76,8 +125,18 @@ export default {
         Vue.$log.debug("element to del: " + JSON.stringify(groupDel) );
         this.$store.dispatch('groupStore/deleteGroup', { groupDel } );
       });
-
-
+    },
+    paginate(pageNum) {
+      this.page = pageNum;
+      this.from = (this.page * this.perPage) - this.perPage;
+      this.to = (this.page * this.perPage);
+    },
+    endOfPage(to, groupCount) {
+      var endOfPage = to;
+      if (to > groupCount) {
+        endOfPage = groupCount;
+      }
+      return endOfPage;
     }
   }
 };

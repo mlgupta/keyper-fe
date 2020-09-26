@@ -13,7 +13,7 @@
 <template>
   <div>   
     <div v-if="hasHosts">
-      <md-table v-model="hosts" :table-header-color="tableHeaderColor" @md-selected="onSelect" md-sort="cn" md-sort-order="asc" md-card md-fixed-header> 
+      <md-table v-model="hosts" :table-header-color="tableHeaderColor" @md-selected="onSelect" md-card> 
         <md-table-toolbar>
           <div class="md-layout-item md-size-100 text-right">   
             <md-button class="md-raised md-success" @click="add"><md-icon>add</md-icon>Add</md-button>
@@ -38,7 +38,7 @@
               <v-clamp autoresize :max-lines="1"> {{ item.description }} </v-clamp>
             </md-table-cell>
             <md-table-cell md-label="Member Of">
-              <md-chip v-for="item in item.memberOfs" :key="item"> {{item}}</md-chip>
+              <md-chip v-for="item in item.memberOfs" :key="item">{{item}}</md-chip>
             </md-table-cell>
           </md-table-row>                       
       </md-table>
@@ -155,7 +155,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .md-table + .md-table {
-    margin-top: 1px
-  }
 </style>

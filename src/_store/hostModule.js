@@ -22,7 +22,7 @@ export const hostStore = {
         getHostById: (state) => (id) => {
             Vue.$log.debug("In gethostbyID: " + id);
             return state.all.find(host => host.cn === id);
-        }
+        },
     },
     actions: {
         getHosts({ dispatch, commit }) {

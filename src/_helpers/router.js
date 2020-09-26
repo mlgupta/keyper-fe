@@ -22,17 +22,17 @@ import LoginLayout from "@/pages/Layout/LoginLayout.vue";
 // import Dashboard from "@/pages/Dashboard.vue";
 import Login from "@/pages/Login.vue";
 import Logout from "@/pages/Logout.vue";
-import Users from "@/pages/Users.vue";
-import AddUser from "@/pages/AddUser.vue";
-import User from "@/pages/User.vue";
-import Hosts from "@/pages/Hosts.vue";
-import Host from "@/pages/Host.vue";
-import AddHost from "@/pages/AddHost.vue";
-import Groups from "@/pages/Groups.vue";
-import Group from "@/pages/Group.vue";
-import AddGroup from "@/pages/AddGroup.vue";
+import Users from "@/pages/Users/Users.vue";
+import AddUser from "@/pages/Users/AddUser.vue";
+import User from "@/pages/Users/User.vue";
+import Hosts from "@/pages/Hosts/Hosts.vue";
+import Host from "@/pages/Hosts/Host.vue";
+import AddHost from "@/pages/Hosts/AddHost.vue";
+import Groups from "@/pages/Groups/Groups.vue";
+import Group from "@/pages/Groups/Group.vue";
+import AddGroup from "@/pages/Groups/AddGroup.vue";
 // import UserDetail from "@/pages/UserProfile/UserCard.vue";
-import UserDetail from "@/pages/UserDetail.vue";
+import UserDetail from "@/pages/UserProfile/UserDetail.vue";
 import Unauthorized from "@/pages/Unauthorized.vue";
 
 const Role = {
@@ -215,27 +215,6 @@ router.beforeEach((to, from, next) => {
       }
       else {
         Vue.$log.debug("JWT Token Expired. Sending user to login");
-        /*
-        store.dispatch('authentication/refreshJWT').then(response => {
-          return next();
-        }, error => {
-          Vue.$log.debug("Token refresh Error");
-          return next({ name: "Login" });
-        });
-       authService.refreshJWT()
-       .then(
-           access_token => {
-               Vue.$log.debug("refresh JWT succesful");
-               return next();
-           },
-           error => {
-               Vue.$log.error("JWT Refresh Error: " + error);
-               dispatch('authentication/logout');
-               dispatch('alert/error', error, { root: true });
-               return next({ name: "Login" });
-           }
-       );
-        */
        return next({ name: "Login" });
       }
     }
@@ -244,42 +223,6 @@ router.beforeEach((to, from, next) => {
     }
   }
   next();
-
-/*  
-  if (authRequired) {
-    if (loggedIn) {
-      const user = JSON.parse(loggedIn);
-
-      const jwt = user.access_token;
-    
-      Vue.$log.debug("JWT: " + jwt);
-    
-      if (isValidJwt(jwt)) {
-        if (to.path === '/') {
-          next("/admin/dashboard");
-        }
-        else {
-          next();
-        }
-      }
-      else {
-        Vue.$log.debug("JWT Token Expired. Lets see if we can refresh");
-        store.dispatch('authentication/refreshJWT').then(response => {
-          return next();
-        }, error => {
-          Vue.$log.debug("Token refresh Error");
-          return next('/login');
-        });
-      }
-    }
-    else {
-      return next('/login');
-    }
-  }
-  else {
-    next();
-  }
-*/
 })
 
 

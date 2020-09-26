@@ -22,7 +22,7 @@ export const userStore = {
         getUserById: (state) => (id) => {
             Vue.$log.debug("In getUserbyID: " + id);
             return state.all.find(user => user.cn === id);
-        }
+        },
     },
     actions: {
         getUsers({ dispatch, commit }) {

@@ -55,7 +55,7 @@ export default {
         */
         Vue.$log.debug("host: " + JSON.stringify(host));
         this.$store.dispatch('hostStore/addHost', { host } );
-        this.$router.push("/admin/hosts");
+        this.$router.push({ name: "Hosts" });
     },
   }
 };
