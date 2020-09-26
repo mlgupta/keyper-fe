@@ -13,7 +13,7 @@
 import axios from "axios";
 import Vue from "vue";
 import { refreshAuthHeader } from './auth_header';
-
+import { getUserClaims } from "@/_helpers";
 
 export const authService = {
     login,
@@ -29,6 +29,7 @@ function login(username, password) {
         .then(response => {
             const user = response.data;
             if (user.access_token) {
+                user.role = getUserClaims(user.access_token);
                 Vue.$log.debug("Saving user data to local storage");
                 localStorage.setItem('user', JSON.stringify(user));
             }
@@ -75,6 +76,7 @@ function refreshJWT() {
             const access_token = response.data.access_token;
             if (access_token) {
                 user.access_token = access_token;
+                user.role = getUserClaims(user.access_token);
                 Vue.$log.debug("Saving user data to local storage");
                 localStorage.setItem('user', JSON.stringify(user));
             }

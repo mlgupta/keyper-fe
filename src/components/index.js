@@ -11,6 +11,7 @@
 *                                                                           *
 ****************************************************************************/
 // Cards
+import NavTabsCard from "./Cards/NavTabsCard.vue";
 
 // Tables
 import UsersTable from "./Tables/UsersTable.vue";
@@ -19,6 +20,7 @@ import GroupsTable from "./Tables/GroupsTable.vue";
 import AddUserKeyModal from "./Modals/AddUserKeyModal";
 
 export {  
+  NavTabsCard,
   UsersTable,
   HostsTable,
   GroupsTable,

@@ -20,15 +20,15 @@
     >
       <mobile-menu slot="content"></mobile-menu>
       
-      <sidebar-link to="/admin/users">
+      <sidebar-link to="/admin/users" :event="active ? 'click' : ''">
         <md-icon>person</md-icon>
         <p>Users</p>
       </sidebar-link>
-      <sidebar-link to="/admin/hosts">
+      <sidebar-link to="/admin/hosts" :event="active ? 'click' : ''">
         <md-icon>computer</md-icon>
         <p>Hosts</p>
       </sidebar-link>
-      <sidebar-link to="/admin/groups">
+      <sidebar-link to="/admin/groups" :event="active ? 'click' : ''">
         <md-icon>group</md-icon>
         <p>Groups</p>
       </sidebar-link>
@@ -64,8 +64,24 @@ export default {
   data() {
     return {
       sidebarBackground: "green",
-      sidebarBackgroundImage: require("@/assets/img/sidebar-2.jpg")
+      sidebarBackgroundImage: require("@/assets/img/sidebar-2.jpg"),
     };
+  },
+  computed: {
+    role() {
+      return this.$store.state.authentication.user.role;
+    },
+    active() {
+      var active;
+
+      if (!this.role) {
+        active  = false;
+      }
+      else {
+        active = this.role.includes("admin"); 
+      }
+      return active;
+    }
   }
 };
 </script>
