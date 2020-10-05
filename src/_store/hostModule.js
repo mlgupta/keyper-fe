@@ -30,7 +30,10 @@ export const hostStore = {
 
             hostService.getHosts()
                 .then(
-                    hosts => commit('getHostsSuccess', hosts),
+                    hosts =>  {
+                        commit('getHostsSuccess', hosts);
+                        commit('sortHosts', 'cn');
+                    },
                     error => {
                         commit('getHostsFailure', error)
                         dispatch('alert/danger', "Error getting Host List", { root: true });
@@ -140,5 +143,20 @@ export const hostStore = {
             Vue.$log.debug("Enter")
             state.all = [];
         },
+        sortHosts(state, sortKey) {
+            Vue.$log.debug("Enter sortGroups");
+            
+            const hosts = state.all;
+            hosts.sort((a,b) => {
+                let compare = 0;
+                if (a[sortKey] > b[sortKey]) {
+                    compare = 1;
+                } else if (a[sortKey] < b[sortKey]) {
+                    compare = -1;
+                }
+                return compare;
+            });
+            state.all = hosts;
+        }
     }
 }

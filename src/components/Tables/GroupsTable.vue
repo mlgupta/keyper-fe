@@ -13,7 +13,7 @@
 <template>
   <div>
     <div>
-    <md-table v-model="groups" :table-header-color="tableHeaderColor" @md-selected="onSelect" md-sort="cn" md-sort-order="asc" md-card> 
+    <md-table v-model="groups" :table-header-color="tableHeaderColor" @md-selected="onSelect" md-card> 
       <md-table-toolbar>
         <div class="md-layout-item md-size-100 text-right">   
           <md-button class="md-raised md-success" @click="add"><md-icon>add</md-icon>Add</md-button>

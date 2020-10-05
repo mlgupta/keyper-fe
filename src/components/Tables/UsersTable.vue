@@ -107,7 +107,7 @@ export default {
       if (count > 1) {
         plural = 's'
       }
-      return `${count} host${plural} selected`
+      return `${count} user${plural} selected`
     },
     add () {
       Vue.$log.debug("Enter");

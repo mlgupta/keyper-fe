@@ -30,7 +30,10 @@ export const groupStore = {
 
             groupService.getGroups()
                 .then(
-                    groups => commit('getGroupsSuccess', groups),
+                    groups => { 
+                        commit('getGroupsSuccess', groups);
+                        commit('sortGroups', 'cn');
+                    },
                     error => {
                         commit('getGroupsFailure', error)
                         dispatch('alert/danger', "Error getting Group List", { root: true });
@@ -140,5 +143,21 @@ export const groupStore = {
             Vue.$log.debug("Enter");
             state.all = [];
         },
+        sortGroups(state, sortKey) {
+            Vue.$log.debug("Enter sortGroups");
+            
+            const groups = state.all;
+            groups.sort((a,b) => {
+                let compare = 0;
+                if (a[sortKey] > b[sortKey]) {
+                    compare = 1;
+                } else if (a[sortKey] < b[sortKey]) {
+                    compare = -1;
+                }
+                return compare;
+            });
+            state.all = groups;
+        }
+
     }
 }

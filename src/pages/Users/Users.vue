@@ -22,33 +22,31 @@
           </md-card-header>
           <md-card-content>
             <users-table table-header-color="green" :users="users" v-on:delete-user="deleteUser"></users-table>
-          </md-card-content>
-          <md-card-actions :class="'md-alignment-space-between'">
-            <div>
-              <p class="card-category">Showing {{from+1}} to {{endOfPage(to, userCount)}} of {{userCount}} entries</p>
-            </div>
-            <paginate 
-              :page-count="pageCount"
-              :click-handler="paginate"
-              :prev-text="'<<'"
-              :next-text="'>>'"
-              :container-class="'pagination pagination-no-border pagination-success pagination-primary list-nobull'">
-            </paginate>
-            <div>
-              <div class="md-layout md-gutter">
-                <div class="md-layout-item">
-                  <md-field>
-                    <label for="perPage">Per Page</label>
-                    <md-select v-model="perPage">
-                      <md-option value="20">20</md-option>
-                      <md-option value="50">50</md-option>
-                      <md-option value="100">100</md-option>
-                    </md-select>
-                  </md-field>
-                </div>
+            <div class="md-layout md-gutter" :class="'md-alignment-center-space-between'">
+              <div class="md-layout-item md-gutter md-xsmall-size-100">
+                <p class="card-category">Showing {{from+1}} to {{endOfPage(to, userCount)}} of {{userCount}} entries</p>
+              </div>  
+              <div class="md-layout-item md-gutter md-xsmall-size-100">
+                <paginate 
+                  :page-count="pageCount"
+                  :click-handler="paginate"
+                  :prev-text="'<<'"
+                  :next-text="'>>'"
+                  :container-class="'pagination pagination-no-border pagination-success pagination-primary list-nobull'">
+                </paginate>
+              </div>  
+              <div class="md-layout-item md-gutter md-size-15 md-xsmall-size-100">
+                <md-field>
+                  <label for="perPage">Per Page</label>
+                  <md-select v-model="perPage">
+                    <md-option value="20">20</md-option>
+                    <md-option value="50">50</md-option>
+                    <md-option value="100">100</md-option>
+                  </md-select>
+                </md-field>
               </div>
-            </div>
-          </md-card-actions>
+            </div>      
+          </md-card-content>
         </md-card>
       </div>
     </div>

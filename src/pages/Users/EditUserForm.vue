@@ -212,11 +212,16 @@ export default {
       return this.$store.state.alert.message;
     },
     hasKeys() {
-      if (this.sshPublicKeys.length > 0) {
-        return true;
+      if (this.sshPublicKeys) {
+        if (this.sshPublicKeys.length > 0) {
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
+
     }
   },
   watch: {
