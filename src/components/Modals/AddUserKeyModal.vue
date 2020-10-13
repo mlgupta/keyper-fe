@@ -61,7 +61,7 @@
   import { validationMixin } from "vuelidate";
   import { required, minLength, maxLength, between } from "vuelidate/lib/validators";
   import Multiselect from 'vue-multiselect';
-  import SSH from "greenlock-ssh-fingerprint";
+  import { fingerprint as fprint}  from "@/_helpers";
 
   const validKey = (key) => {
         if (!key || 0 === key.length) {
@@ -70,10 +70,10 @@
         else {
           var fp = "";
           try {
-            SSH.fingerprint({ pub: key })
+            fprint({ pub: key })
               .then(
                 fing => {
-                  fp = fing.fingerprint;
+                  fp = fing;
                   Vue.$log.debug("Fingerprint: " + fp);
                 }
               );
@@ -179,12 +179,11 @@
 
         var fp = "";
         try {
-          SSH.fingerprint({ pub: this.userkey.key })
+          fprint({ pub: this.userkey.key })
             .then(
               fing => {
-                fp = fing.fingerprint;
-                Vue.$log.debug("Fingerprint: " + fp);
-                this.userkey.fingerprint = fp;
+                Vue.$log.debug("Fingerprint: " + fing);
+                this.userkey.fingerprint = fing;
               }
             );
             return true;

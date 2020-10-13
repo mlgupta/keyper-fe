@@ -183,7 +183,7 @@ export default {
       mail: this.user.mail,
       memberOfs: this.user.memberOfs,
       accountLocked: this.user.accountLocked,
-      sshPublicKeys: this.user.sshPublicKeys,
+      //sshPublicKeys: this.user.sshPublicKeys,
       sending: false
     };
   },
@@ -212,8 +212,9 @@ export default {
       return this.$store.state.alert.message;
     },
     hasKeys() {
-      if (this.sshPublicKeys) {
-        if (this.sshPublicKeys.length > 0) {
+      Vue.$log.debug("Enter");
+      if (this.user.sshPublicKeys) {
+        if (this.user.sshPublicKeys.length > 0) {
           return true;
         } else {
           return false;
@@ -221,7 +222,9 @@ export default {
       } else {
         return false;
       }
-
+    },
+    sshPublicKeys() {
+      return this.user.sshPublicKeys;
     }
   },
   watch: {
@@ -303,9 +306,10 @@ export default {
     },
     del(delKey) {
       Vue.$log.debug(delKey);
-      this.sshPublicKeys = this.sshPublicKeys.filter(key => key.key !== delKey);
+      //this.sshPublicKeys = this.sshPublicKeys.filter(key => key.key !== delKey);
       var changes = {};
-      changes.sshPublicKeys = this.sshPublicKeys;
+      //changes.sshPublicKeys = this.sshPublicKeys;
+      changes.sshPublicKeys = this.sshPublicKeys.filter(key => key.key !== delKey);
       var user = {};
       user.id = this.user.cn;
       user.changes = changes;

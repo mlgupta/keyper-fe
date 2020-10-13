@@ -10,13 +10,27 @@
 * Copyright (c) 2020-2021 DBSentry Corp.  All Rights Reserved.              *
 *                                                                           *
 ****************************************************************************/
-export * from "./auth_header";
-export * from "./authService";
-export * from "./router";
-export * from "./jwt";
-export * from "./userService";
-export * from "./hostService";
-export * from "./groupService";
-export * from "./notification";
-export * from "./ssh-parser";
-export * from "./encoding";
+import Vue from "vue";
+
+export const  base64ToBuf = function (str) {
+  Vue.$log.debug("Enter");
+
+  return Buffer.from(str, 'base64');
+};
+
+export const  bufToBase64 = function (u8) {
+  return Buffer.from(u8).toString('base64');
+};
+
+export const  bufToBin = function (u8) {
+  return Buffer.from(u8).toString('binary');
+};
+
+export const  bufToHex = function (u8) {
+  return Buffer.from(u8).toString('hex');
+};
+
+export const  bufToUrlBase64 = function (u8) {
+  return bufToBase64(u8)
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+};
