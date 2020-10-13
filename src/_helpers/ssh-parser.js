@@ -10,6 +10,10 @@
 *                                                                           *
 * Copyright (c) 2020-2021 DBSentry Corp.  All Rights Reserved.              *
 *                                                                           *
+*****************************************************************************
+* Original code source credit:                                              *
+*    https://git.coolaj86.com/coolaj86/ssh-fingerprint.js                   *
+*                                                                           *
 ****************************************************************************/
 import Vue from "vue";
 import  * as Enc  from "./encoding";
