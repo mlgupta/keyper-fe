@@ -16,12 +16,14 @@ import UserCard from "../pages/UserProfile/UserCard.vue";
 // Forms
 import EditProfileForm from "../pages/UserProfile/EditProfileForm.vue";
 import EditUserForm from "../pages/Users/EditUserForm.vue";
+import EditUserFormKeys from "../pages/Users/EditUserFormKeys.vue";
 import AddUserForm from "../pages/Users/AddUserForm.vue";
 
 import AddHostForm from "../pages/Hosts/AddHostForm.vue";
 import EditHostForm from "../pages/Hosts/EditHostForm.vue";
+import EditHostFormCerts from "../pages/Hosts/EditHostFormCerts.vue";
 
 import AddGroupForm from "../pages/Groups/AddGroupForm.vue";
 import EditGroupForm from "../pages/Groups/EditGroupForm.vue";
 
-export { UserCard, EditProfileForm, EditUserForm, AddUserForm, AddHostForm, EditHostForm, AddGroupForm, EditGroupForm };
+export { UserCard, EditProfileForm, EditUserForm, EditUserFormKeys, AddUserForm, AddHostForm, EditHostForm, EditHostFormCerts, AddGroupForm, EditGroupForm };

@@ -11,152 +11,160 @@
 
 -->
 <template>
-  <div class="md-layout">
-    <div class="md-layout-item md-size-100">
-      <nav-tabs-card>
-        <template slot="content">
-          <span class="md-nav-tabs-title">Edit:</span>
-          <md-tabs class="md-success" md-alignment="left">
-            <md-tab id="tab-home" md-label="User">
-              <form novalidate @submit.prevent="update">
-                <div class="md-layout">
-                  <div class="md-layout-item md-small-size-100 md-size-50">
-                    <md-field>
-                      <label>User Name (disabled)</label>
-                      <md-input :value="user.cn" disabled></md-input>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-small-size-100 md-size-50">
-                    <md-field :class="getValidationClass('mail')">
-                      <label>Email Address</label>
-                      <md-input  v-model="mail"  type="email" @input="handleChange($event, 'mail')" :disabled="sending"></md-input>
-                      <span class="md-error" v-if="!$v.mail.required">Email is required</span>
-                      <span class="md-error" v-else-if="!$v.mail.minlength">Invalid Email</span>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-small-size-100 md-size-50">
-                    <md-field>
-                      <label>First Name</label>
-                      <md-input :value="user.givenName" type="text" @input="handleChange($event, 'givenName')"></md-input>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-small-size-100 md-size-50">
-                    <md-field  :class="getValidationClass('sn')">
-                      <label>Last Name</label>
-                      <md-input v-model="sn" type="text" @input="handleChange($event, 'sn')"></md-input>
-                      <span class="md-error" v-if="!$v.sn.required">Lastname is required</span>
-                      <span class="md-error" v-else-if="!$v.sn.minlength">Invalid Lastname</span>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-small-size-100 md-size-100">
-                    <md-field>
-                      <label>Display name</label>
-                      <md-input :value="user.displayName" type="text" @input="handleChange($event, 'displayName')"></md-input>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-size-100">
-                    <label>Groups</label>
-                    <md-field>
-                      <multiselect :value=memberOfs @input="handleChange($event, 'memberOfs')" :options="groups" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Groups">
-                      </multiselect>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-small-size-100 md-size-50">
-                    <md-field :class="getValidationClass('userPassword')">
-                      <label>Password</label>
-                      <md-input v-model="userPassword" @input="handleChange($event, 'userPassword')" type="password" :disabled="sending"></md-input>
-                      <span class="md-error" v-if="!$v.userPassword.required">Password is required</span>
-                      <span class="md-error" v-else-if="!$v.userPassword.minlength">Invalid Password</span>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-small-size-100 md-size-50">
-                    <md-field :class="getValidationClass('confirmPassword')">
-                      <label>Confirm Password</label>
-                      <md-input v-model="confirmPassword" @input="handleChange($event, 'confirmPassword')" type="password" :disabled="sending"></md-input>
-                      <span class="md-error" v-if="!$v.confirmPassword.sameAs">Passwords must be same</span>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-small-size-100 md-size-50">
-                      <md-switch v-model="accountLocked" @change="value => handleChange(value, 'accountLocked')">
-                        <div v-if="accountLocked">
-                          Account is Locked
-                          <md-icon title="Locked">lock</md-icon>
-                        </div>
-                        <div v-else>
-                          Account is Active
-                          <md-icon title="UnLocked">lock_open</md-icon>
-                        </div>    
-                      </md-switch>
-                  </div>
-                  <div class="md-layout-item md-size-100 text-right">
-                    <md-button type="submit" class="md-raised md-success" :disabled="sending">Update</md-button>
-                  </div>
-                </div>
-              </form>
-            </md-tab>
-
-            <!-- User Keys -->
-            <md-tab id="tab-keys" md-label="SSH Keys">
-              <div class="md-layout-item md-size-100">
-                <div class="md-layout-item md-size 100">
-                  <add-user-key-modal :hosts="memberOfs" :user="user" class="text-right"></add-user-key-modal>
-                </div>
-                <div v-if="hasKeys">
-                  <md-table v-model="sshPublicKeys">
-                    <md-table-row>
-                      <md-table-head>Name</md-table-head>
-                      <md-table-head>Key Fingerprint</md-table-head>
-                      <md-table-head>Expiration</md-table-head>
-                      <md-table-head>Hosts</md-table-head>
-                    </md-table-row>
-                    <md-table-row v-for="item in sshPublicKeys" :key="item.name">
-                      <md-table-cell md-label="Name">{{ item.name }}</md-table-cell>
-                      <md-table-cell>
-                        <v-clamp autoresize :max-lines="1">{{ item.fingerprint }}</v-clamp>
-                      </md-table-cell>
-                      <md-table-cell md-label="Expiration">{{ dateExpire(item.dateExpire) }}</md-table-cell>
-                      <md-table-cell md-label='Hosts'>{{ displayHosts(item.hostGroups) }}</md-table-cell>
-                      <md-table-cell>
-                        <md-button class='md-just-icon md-simple md-danger' @click="del(item.key)">
-                          <md-icon>close</md-icon>
-                          <md-tooltip md-direction="top">Delete Key</md-tooltip>
-                        </md-button>
-                      </md-table-cell>
-                    </md-table-row>
-                  </md-table>
-                </div>
-                <div v-else>
-                  <md-empty-state
-                    md-icon="vpn_key"
-                    md-label="Add Key"
-                    md-description="Add key for the user.">
-                    <add-user-key-modal :hosts="memberOfs" :user="user" class="text-right"> </add-user-key-modal>
-                  </md-empty-state>
-                </div>
-              </div>
-            </md-tab>
-          </md-tabs>
-        </template>
-      </nav-tabs-card>
-    </div>
-  </div>
+  <md-tab id="tab-home" md-label="User">
+    <form novalidate @submit.prevent="update">
+      <div class="md-layout">
+        <div class="md-layout-item md-small-size-100 md-size-50">
+          <md-field>
+            <label>User Name (disabled)</label>
+            <md-input :value="user.cn" disabled></md-input>
+          </md-field>
+        </div>
+        <div class="md-layout-item md-small-size-100 md-size-50">
+          <md-field :class="getValidationClass('mail')">
+            <label>Email Address</label>
+            <md-input
+              v-model="mail"
+              type="email"
+              @input="handleChange($event, 'mail')"
+              :disabled="sending"
+            ></md-input>
+            <span class="md-error" v-if="!$v.mail.required"
+              >Email is required</span
+            >
+            <span class="md-error" v-else-if="!$v.mail.minlength"
+              >Invalid Email</span
+            >
+          </md-field>
+        </div>
+        <div class="md-layout-item md-small-size-100 md-size-50">
+          <md-field>
+            <label>First Name</label>
+            <md-input
+              :value="user.givenName"
+              type="text"
+              @input="handleChange($event, 'givenName')"
+            ></md-input>
+          </md-field>
+        </div>
+        <div class="md-layout-item md-small-size-100 md-size-50">
+          <md-field :class="getValidationClass('sn')">
+            <label>Last Name</label>
+            <md-input
+              v-model="sn"
+              type="text"
+              @input="handleChange($event, 'sn')"
+            ></md-input>
+            <span class="md-error" v-if="!$v.sn.required"
+              >Lastname is required</span
+            >
+            <span class="md-error" v-else-if="!$v.sn.minlength"
+              >Invalid Lastname</span
+            >
+          </md-field>
+        </div>
+        <div class="md-layout-item md-small-size-100 md-size-100">
+          <md-field>
+            <label>Display name</label>
+            <md-input
+              :value="user.displayName"
+              type="text"
+              @input="handleChange($event, 'displayName')"
+            ></md-input>
+          </md-field>
+        </div>
+        <div class="md-layout-item md-size-100">
+          <label>Groups</label>
+          <md-field>
+            <multiselect
+              :value="memberOfs"
+              @input="handleChange($event, 'memberOfs')"
+              :options="groups"
+              label="cn"
+              track-by="dn"
+              :multiple="true"
+              :searchable="true"
+              :hide-selected="true"
+              placeholder="Select Groups"
+            >
+            </multiselect>
+          </md-field>
+        </div>
+        <div class="md-layout-item md-small-size-100 md-size-50">
+          <md-field :class="getValidationClass('userPassword')">
+            <label>Password</label>
+            <md-input
+              v-model="userPassword"
+              @input="handleChange($event, 'userPassword')"
+              type="password"
+              :disabled="sending"
+            ></md-input>
+            <span class="md-error" v-if="!$v.userPassword.required"
+              >Password is required</span
+            >
+            <span class="md-error" v-else-if="!$v.userPassword.minlength"
+              >Invalid Password</span
+            >
+          </md-field>
+        </div>
+        <div class="md-layout-item md-small-size-100 md-size-50">
+          <md-field :class="getValidationClass('confirmPassword')">
+            <label>Confirm Password</label>
+            <md-input
+              v-model="confirmPassword"
+              @input="handleChange($event, 'confirmPassword')"
+              type="password"
+              :disabled="sending"
+            ></md-input>
+            <span class="md-error" v-if="!$v.confirmPassword.sameAs"
+              >Passwords must be same</span
+            >
+          </md-field>
+        </div>
+        <div class="md-layout-item md-small-size-100 md-size-50">
+          <md-switch
+            v-model="accountLocked"
+            @change="value => handleChange(value, 'accountLocked')"
+          >
+            <div v-if="accountLocked">
+              Account is Locked
+              <md-icon title="Locked">lock</md-icon>
+            </div>
+            <div v-else>
+              Account is Active
+              <md-icon title="UnLocked">lock_open</md-icon>
+            </div>
+          </md-switch>
+        </div>
+        <div class="md-layout-item md-size-100 text-right">
+          <md-button
+            type="submit"
+            class="md-raised md-success"
+            :disabled="sending"
+            >Update</md-button
+          >
+        </div>
+      </div>
+    </form>
+  </md-tab>
 </template>
+
 <script>
 import Vue from "vue";
 import { validationMixin } from "vuelidate";
-import { required, minLength, maxLength, email, sameAs } from "vuelidate/lib/validators";
-import VClamp from "vue-clamp";
+import {
+  required,
+  minLength,
+  maxLength,
+  email,
+  sameAs
+} from "vuelidate/lib/validators";
 import Multiselect from "vue-multiselect";
-import { AddUserKeyModal } from "@/components";
-import { NavTabsCard } from "@/components";
 
 export default {
   name: "edit-user-form",
   components: {
-    VClamp,
-    Multiselect,
-    AddUserKeyModal,
-    NavTabsCard
+    Multiselect
   },
   mixins: [validationMixin],
   props: {
@@ -183,7 +191,6 @@ export default {
       mail: this.user.mail,
       memberOfs: this.user.memberOfs,
       accountLocked: this.user.accountLocked,
-      //sshPublicKeys: this.user.sshPublicKeys,
       sending: false
     };
   },
@@ -210,21 +217,6 @@ export default {
     },
     alertMsg() {
       return this.$store.state.alert.message;
-    },
-    hasKeys() {
-      Vue.$log.debug("Enter");
-      if (this.user.sshPublicKeys) {
-        if (this.user.sshPublicKeys.length > 0) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    },
-    sshPublicKeys() {
-      return this.user.sshPublicKeys;
     }
   },
   watch: {
@@ -258,7 +250,9 @@ export default {
       }
     },
     displayHosts: function(hosts) {
-      var displayHost = hosts.map(val => val.split(",")[0].split("=")[1]).join(", ");
+      var displayHost = hosts
+        .map(val => val.split(",")[0].split("=")[1])
+        .join(", ");
       return displayHost;
     },
     dateExpire: function(date) {
@@ -303,17 +297,6 @@ export default {
         verticalAlign: "top",
         type: type
       });
-    },
-    del(delKey) {
-      Vue.$log.debug(delKey);
-      //this.sshPublicKeys = this.sshPublicKeys.filter(key => key.key !== delKey);
-      var changes = {};
-      //changes.sshPublicKeys = this.sshPublicKeys;
-      changes.sshPublicKeys = this.sshPublicKeys.filter(key => key.key !== delKey);
-      var user = {};
-      user.id = this.user.cn;
-      user.changes = changes;
-      this.$store.dispatch("userStore/updateUser", { user });
     }
   }
 };

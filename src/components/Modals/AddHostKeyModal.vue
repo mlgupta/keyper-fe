@@ -20,58 +20,54 @@
             <div class="md-layout-item md-size-100">
               <md-field maxlength="5" :class="getValidationClass('name')">
                 <label>Name</label>
-                <md-input v-model="userkey.name" :disabled="sending"></md-input>
-                <span class="md-error" v-if="!$v.userkey.name.required"
+                <md-input v-model="hostkey.name" :disabled="sending"></md-input>
+                <span class="md-error" v-if="!$v.hostkey.name.required"
                   >Name is required</span
                 >
-                <span class="md-error" v-else-if="!$v.userkey.name.minlength"
+                <span class="md-error" v-else-if="!$v.hostkey.name.minlength"
                   >Invalid Name</span
                 >
-                <span class="md-error" v-else-if="!$v.userkey.name.maxlength"
+                <span class="md-error" v-else-if="!$v.hostkey.name.maxlength"
                   >Invalid Name</span
                 >
               </md-field>
               <md-field maxlength="5" :class="getValidationClass('key')">
                 <label>Key</label>
                 <md-textarea
-                  v-model="userkey.key"
+                  v-model="hostkey.key"
                   @input="fingerprint()"
                   :disabled="sending"
                 ></md-textarea>
                 <md-icon>vpn_key</md-icon>
-                <span class="md-error" v-if="!$v.userkey.key.required"
+                <span class="md-error" v-if="!$v.hostkey.key.required"
                   >Key is required</span
                 >
-                <span class="md-error" v-else-if="!$v.userkey.key.validKey"
+                <span class="md-error" v-else-if="!$v.hostkey.key.validKey"
                   >Invalid Key</span
                 >
               </md-field>
               <md-field maxlength="5" :class="getValidationClass('duration')">
                 <label>Valid For (days)</label>
                 <md-input
-                  v-model="userkey.duration"
+                  v-model="hostkey.duration"
                   :disabled="sending"
                 ></md-input>
-                <span class="md-error" v-if="!$v.userkey.duration.required"
+                <span class="md-error" v-if="!$v.hostkey.duration.required"
                   >Duration is required</span
                 >
-                <span class="md-error" v-else-if="!$v.userkey.duration.between"
+                <span class="md-error" v-else-if="!$v.hostkey.duration.between"
                   >Duration must be between 30 and 360 days</span
                 >
               </md-field>
-              <md-field>
-                <label>Hosts</label>
-                <multiselect
-                  v-model="userkey.hostGroups"
-                  :options="hosts"
-                  label="cn"
-                  track-by="dn"
-                  :multiple="true"
-                  :searchable="true"
-                  :hide-selected="true"
-                  placeholder="Select Hosts"
+              <md-field :class="getValidationClass('principal')">
+                <label>Principal</label>
+                <md-chips
+                  v-model="hostkey.principal"
+                  :disabled="sending"
+                ></md-chips>
+                <span class="md-error" v-if="!$v.hostkey.principal.required"
+                  >Principal is required</span
                 >
-                </multiselect>
               </md-field>
             </div>
             <md-dialog-actions>
@@ -126,34 +122,29 @@ const validKey = key => {
 };
 
 export default {
-  name: "add-user-key-modal",
+  name: "add-host-key-modal",
   mixins: [validationMixin],
-  components: {
-    Multiselect
-  },
+  components: {},
   props: {
-    hosts: {
-      type: Array
-    },
-    user: {
+    host: {
       type: Object
     }
   },
   data() {
     return {
       showDialog: false,
-      userkey: {
+      hostkey: {
         key: null,
         duration: null,
-        hostGroups: [],
         fingerprint: null,
-        name: null
+        name: null,
+        principal: [this.host.cn]
       },
       sending: false
     };
   },
   validations: {
-    userkey: {
+    hostkey: {
       name: {
         required,
         minLength: minLength(2),
@@ -166,6 +157,9 @@ export default {
       duration: {
         required,
         between: between(20, 360)
+      },
+      principal: {
+        required
       }
     }
   },
@@ -179,17 +173,16 @@ export default {
   },
   watch: {
     alertMsg(newAlert) {
-      Vue.$log.debug("Enter in AddUserKey");
+      Vue.$log.debug("Enter in Addhostkey");
       Vue.$log.debug("Alert Type: " + this.alert.type);
 
       if (this.alert.type == null) {
         Vue.$log.debug("Nothing in alert");
       } else {
         if (this.alert.type == "success") {
-          this.userkey.name = null;
-          this.userkey.key = null;
-          this.userkey.duration = null;
-          this.userkey.hostGroups = [];
+          this.hostkey.name = null;
+          this.hostkey.key = null;
+          this.hostkey.duration = null;
         }
         this.notifyVue(this.alert.type, this.alert.message);
         this.$store.dispatch("alert/clear");
@@ -204,7 +197,7 @@ export default {
       Vue.$log.debug("Enter");
       Vue.$log.debug("fieldName: " + fieldName);
 
-      const field = this.$v.userkey[fieldName];
+      const field = this.$v.hostkey[fieldName];
       Vue.$log.debug("field: " + JSON.stringify(field));
       Vue.$log.debug("md-invalid: " + field.$invalid && field.$dirty);
 
@@ -219,9 +212,9 @@ export default {
 
       var fp = "";
       try {
-        fprint({ pub: this.userkey.key }).then(fing => {
+        fprint({ pub: this.hostkey.key }).then(fing => {
           Vue.$log.debug("Fingerprint: " + fing);
-          this.userkey.fingerprint = fing;
+          this.hostkey.fingerprint = fing;
         });
         return true;
       } catch (e) {
@@ -231,8 +224,8 @@ export default {
     add() {
       Vue.$log.debug("Enter Add Key");
 
-      Vue.$log.debug(this.user.cn);
-      Vue.$log.debug(this.userkey);
+      Vue.$log.debug(this.host.cn);
+      Vue.$log.debug(this.hostkey);
 
       this.$v.$touch();
 
@@ -240,47 +233,42 @@ export default {
         Vue.$log.debug("Validation Errors");
       } else {
         var now = new Date();
-        now.setDate(now.getDate() + parseInt(this.userkey.duration));
+        now.setDate(now.getDate() + parseInt(this.hostkey.duration));
         var dateExpire = now
           .toISOString()
           .slice(0, 10)
           .replace(/-/g, "");
-        var hosts = this.userkey.hostGroups.map(val => val.dn);
         var key = {};
-        key.keyid = 0;
-        key.keytype = 0;
-        key.name = this.userkey.name;
-        key.key = this.userkey.key;
-        key.fingerprint = this.userkey.fingerprint;
-        key.hostGroups = hosts;
+        key.keyid = 100;
+        key.keytype = 1;
+        key.name = this.hostkey.name;
+        key.key = this.hostkey.key;
+        key.fingerprint = this.hostkey.fingerprint;
         key.dateExpire = dateExpire;
-        var sshKeys_arr = [];
-        if (this.user.hasOwnProperty("sshPublicKeys")) {
-          if (this.user.sshPublicKeys.length > 0) {
-            sshKeys_arr = this.user.sshPublicKeys;
+        key.principal = this.hostkey.principal.map(s => s.trim()).join();
+        var sshCerts_arr = [];
+
+        if (this.host.hasOwnProperty("sshPublicCerts")) {
+          if (this.host.sshPublicCerts.length > 0) {
+            sshCerts_arr = this.host.sshPublicCerts;
             key.keyid =
-              Math.max(...this.user.sshPublicKeys.map(d => d.keyid)) + 1;
+              Math.max(...this.host.sshPublicCerts.map(d => d.keyid)) + 1;
           }
         }
-        sshKeys_arr.push(key);
+        sshCerts_arr.push(key);
         var sshKeys = {};
-        sshKeys.sshPublicKeys = sshKeys_arr;
-        var user = {};
-        user.cn = this.user.cn;
-        user.id = this.user.cn;
-        user.changes = sshKeys;
+        sshKeys.sshPublicCerts = sshCerts_arr;
+        var host = {};
+        host.cn = this.host.cn;
+        host.id = this.host.cn;
+        host.changes = sshKeys;
 
         this.sending = true;
 
-        this.$store.dispatch("userStore/updateUser", { user });
-
-        if (this.user.cn == this.$store.state.authentication.user.cn) {
-          this.$store.dispatch("authentication/updateUser", { user });
-        }
+        this.$store.dispatch("hostStore/updateHost", { host });
         this.showDialog = false;
 
         this.sending = false;
-        // this.$router.push("/admin/users/"+user.id);
       }
     }
   }

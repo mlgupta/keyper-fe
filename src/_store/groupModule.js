@@ -110,7 +110,8 @@ export const groupStore = {
             Vue.$log.debug("updateGroupsSuccess Enter");
             Vue.$log.debug("group: " + JSON.stringify(group));
             const index = state.all.findIndex((stateGroup) => stateGroup.cn === group.cn);
-            state.all[index] = group.changes;
+            //state.all[index] = group.changes;
+            Vue.set(state.all, index, group);
         },
         updateGroupFailure(state, error) {
             Vue.$log.error("updateGroupsFailure Enter")

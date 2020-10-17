@@ -14,7 +14,19 @@
   <div class="content">
     <div class="md-layout">
       <div class="md-layout-item md-medium-size-100 md-size-100">
-        <edit-user-form data-background-color="green" :user="user" :groups="groups" :hosts="hosts" v-on:update-user="updateUser"> </edit-user-form>
+        <div class="md-layout">
+          <div class="md-layout-item md-size-100">
+            <nav-tabs-card>
+              <template slot="content">
+                <span class="md-nav-tabs-title">Edit:</span>
+                  <md-tabs class="md-success" md-alignment="left">
+                    <edit-user-form data-background-color="green" :user="user" :groups="groups" :hosts="hosts" v-on:update-user="updateUser"> </edit-user-form>
+                    <edit-user-form-keys data-background-color="green" :user="user" v-on:update-user="updateUser"> </edit-user-form-keys>
+                  </md-tabs>
+              </template>
+            </nav-tabs-card>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -22,11 +34,15 @@
 
 <script>
 import { EditUserForm } from "@/pages";
+import { EditUserFormKeys } from "@/pages";
+import { NavTabsCard } from "@/components";
 import Vue from "vue";
 
 export default {
   components: {
-    EditUserForm
+    NavTabsCard,
+    EditUserForm,
+    EditUserFormKeys
   },
   computed: {
     user() {

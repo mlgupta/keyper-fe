@@ -12,17 +12,47 @@
 -->
 <template>
   <div class="md-layout">
-    <user-card :user="user" v-on:update-user="updateUser"></user-card>
+      <md-card class="md-card-profile">
+    <div class="md-card-avatar">
+      <img class="img" :src="cardUserImage" />
+    </div>
+
+    <md-card-content>
+      <h4 class="card-title">{{ user.displayName }}</h4>
+      <div class="md-layout" md-alignment="left">
+        <div class="md-layout-item md-size-100">
+          <nav-tabs-card>
+            <template slot="content">
+              <md-tabs class="md-success" md-alignment="left">
+                <user-card :user="user" v-on:update-user="updateUser"></user-card>
+                <edit-user-form-keys data-background-color="green" :user="user" v-on:update-user="updateUser"> </edit-user-form-keys>
+              </md-tabs>
+            </template>
+          </nav-tabs-card>
+        </div>
+      </div>
+    </md-card-content>
+  </md-card>
   </div>
 </template>
 
 <script>
 import { UserCard } from "@/pages";
+import { EditUserFormKeys } from "@/pages";
+import { NavTabsCard } from "@/components";
 import Vue from "vue";
 
 export default {
   components: {
-    UserCard
+    NavTabsCard,
+    UserCard,
+    EditUserFormKeys
+  },
+  props: {
+    cardUserImage: {
+      type: String,
+      default: require("@/assets/img/faces/person.png")
+    },
   },
   computed: {
     user() {

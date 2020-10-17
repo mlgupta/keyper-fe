@@ -110,7 +110,8 @@ export const hostStore = {
             Vue.$log.debug("updateHostsSuccess Enter");
             Vue.$log.debug("host: " + JSON.stringify(host));
             const index = state.all.findIndex((stateHost) => stateHost.cn === host.cn);
-            state.all[index] = host.changes;
+            //state.all[index] = host.changes;
+            Vue.set(state.all, index, host);
         },
         updateHostFailure(state, error) {
             Vue.$log.error("updateHostsFailure Enter")

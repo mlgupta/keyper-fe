@@ -11,45 +11,30 @@
 
 -->
 <template>
+  <md-tab id="tab-home" md-label="Host">
   <form>
-    <md-card>
-      <md-card-header :data-background-color="dataBackgroundColor">
-        <h4 class="title">Edit Host</h4>
-        <p class="category"></p>
-      </md-card-header>
-
-      <md-card-content>
-        <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-100">
-            <md-field>
-              <label>Name (disabled)</label>
-              <md-input :value="host.cn" disabled></md-input>
-            </md-field>
-          </div>
-          <div class="md-layout-item md-size-100">
-            <md-field maxlength="5">
-              <label>Description</label>
-              <md-textarea :value="host.description" @input="handleChange($event, 'description')"></md-textarea>
-            </md-field>
-          </div>
-          <!--
-          <div class="md-layout-item md-size-100">
-              <md-field>
-                  <label>Owners</label>
-                  <multiselect :value="value" @input="handleChange($event, 'owners')" :options="users" label="cn" track-by="dn" :multiple="true" :searchable="true" :hide-selected="true" placeholder="Select Owners">
-                  </multiselect>
-              </md-field>
-          </div>
-          -->
-          <div class="md-layout-item md-size-100 text-right">
-            <md-button class="md-raised md-success" @click="update">Update</md-button>
-          </div>
-        </div>
-      </md-card-content>
-    </md-card>
+    <div class="md-layout md-gutter">
+      <div class="md-layout-item md-size-100">
+        <md-field>
+          <label>Name (disabled)</label>
+          <md-input :value="host.cn" disabled></md-input>
+        </md-field>
+      </div>
+      <div class="md-layout-item md-size-100">
+        <md-field maxlength="5">
+          <label>Description</label>
+          <md-textarea :value="host.description" @input="handleChange($event, 'description')"></md-textarea>
+        </md-field>
+      </div>
+      <div class="md-layout-item md-size-100 text-right">
+        <md-button class="md-raised md-success" @click="update">Update</md-button>
+      </div>
+    </div>
   </form>
+  </md-tab>
 </template>
 <script>
+
 import Vue from "vue";
 import { validationMixin } from "vuelidate";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";

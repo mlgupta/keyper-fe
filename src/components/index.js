@@ -18,11 +18,15 @@ import UsersTable from "./Tables/UsersTable.vue";
 import HostsTable from "./Tables/HostsTable.vue";
 import GroupsTable from "./Tables/GroupsTable.vue";
 import AddUserKeyModal from "./Modals/AddUserKeyModal";
+import AddHostKeyModal from "./Modals/AddHostKeyModal";
+import Modal from "./Modals/Modal";
 
 export {  
   NavTabsCard,
   UsersTable,
   HostsTable,
   GroupsTable,
-  AddUserKeyModal
+  AddUserKeyModal,
+  AddHostKeyModal,
+  Modal
 };

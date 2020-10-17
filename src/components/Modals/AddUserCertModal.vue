@@ -13,7 +13,7 @@
 <template>
   <div>
     <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title class="md-success">Add Key</md-dialog-title>
+      <md-dialog-title class="md-success">Add Cert</md-dialog-title>
       <md-dialog-content>
         <div>
           <form novalidate @submit.prevent="add">

@@ -13,10 +13,20 @@
 <template>
   <div class="content">
     <div class="md-layout">
-      <div class="md-layout-item md-medium-size-100 md-size-66">
-        <edit-host-form data-background-color="green" :host="host" :users="users" v-on:update-host="updateHost"> </edit-host-form>
-      </div>
-      <div class="md-layout-item md-medium-size-100 md-size-33">
+      <div class="md-layout-item md-medium-size-100 md-size-100">
+        <div class="md-layout">
+          <div class="md-layout-item md-size-100">
+            <nav-tabs-card>
+              <template slot="content">
+                <span class="md-nav-tabs-title">Edit:</span>
+                <md-tabs class="md-success" md-alignment="left">
+                  <edit-host-form data-background-color="green" :host="host" :users="users" v-on:update-host="updateHost"> </edit-host-form>
+                  <edit-host-form-certs data-background-color="green" :host="host" v-on:update-host="updateHost"> </edit-host-form-certs>
+                </md-tabs>
+              </template>
+            </nav-tabs-card>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -24,11 +34,15 @@
 
 <script>
 import { EditHostForm } from "@/pages";
+import { EditHostFormCerts } from "@/pages";
+import { NavTabsCard } from "@/components";
 import Vue from "vue";
 
 export default {
   components: {
-    EditHostForm
+    NavTabsCard,
+    EditHostForm,
+    EditHostFormCerts
   },
   computed: {
     host() {

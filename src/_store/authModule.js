@@ -111,10 +111,12 @@ export const authentication = {
             Vue.$log.debug("user: " + JSON.stringify(user));
 
             var changes = user.changes;
+            var stateUser = state.user;
 
             for (let key in changes) {
-                state.user[key] = changes[key];
+                stateUser[key] = changes[key];
             }
+            Vue.set(state, user, stateUser);
         },
     }
 };
