@@ -17,31 +17,30 @@
       <div class="md-layout-item md-size 100">
         <add-host-key-modal
           :host="host"
+          :modalError="modalError"
           class="text-right"
         ></add-host-key-modal>
       </div>
       <div v-if="hasKeys">
         <md-table v-model="sshPublicCerts">
           <md-table-row>
+            <md-table-head>ID</md-table-head>
             <md-table-head>Name</md-table-head>
             <md-table-head>Fingerprint</md-table-head>
             <md-table-head>Expiration</md-table-head>
-            <md-table-head>Principal</md-table-head>
             <md-table-head>Options</md-table-head>
           </md-table-row>
-          <md-table-row v-for="item in sshPublicCerts" :key="item.id">
+          <md-table-row v-for="item in sshPublicCerts" :key="item.keyid">
+            <md-table-cell md-label="Name">{{ item.keyid }}</md-table-cell>
             <md-table-cell md-label="Name">{{ item.name }}</md-table-cell>
             <md-table-cell>
-              <v-clamp autoresize :max-lines="1">{{
+              <v-clamp autoresize:max-lines="1">{{
                 item.fingerprint
               }}</v-clamp>
             </md-table-cell>
             <md-table-cell md-label="Expiration">{{
               dateExpire(item.dateExpire)
             }}</md-table-cell>
-            <md-table-cell v-if="item.hasOwnProperty('principal')" md-label="Principal">
-              {{ item.principal.replace(/,/g, ', ') }}
-            </md-table-cell>
             <md-table-cell>
               <md-button
                 class="md-just-icon md-simple"
@@ -74,7 +73,7 @@
               -->
               <md-button
                 class="md-just-icon md-simple md-danger"
-                @click="del(item.key)"
+                @click="del(item.keyid)"
               >
                 <md-icon>close</md-icon>
                 <md-tooltip md-direction="top">Delete Key</md-tooltip>
@@ -91,6 +90,7 @@
         >
           <add-host-key-modal
             :host="host"
+            :modalError="modalError"
             class="text-right"
           >
           </add-host-key-modal>
@@ -138,7 +138,8 @@ export default {
       memberOfs: {},
       showDialog: false,
       canCopy: false,
-      sending: false
+      sending: false,
+      modalError: false
     };
   },
   validations: {
@@ -174,6 +175,12 @@ export default {
       if (this.alert.type == null) {
         Vue.$log.debug("Nothing in alert");
       } else {
+        if (this.alert.type == "danger") {
+          modalError = true;
+        }
+        else {
+          modalError = false;
+        }
         this.notifyVue(this.alert.type, this.alert.message);
         this.$store.dispatch("alert/clear");
       }
@@ -243,13 +250,11 @@ export default {
         type: type
       });
     },
-    del(delKey) {
-      Vue.$log.debug(delKey);
-      //this.sshPublicKeys = this.sshPublicKeys.filter(key => key.key !== delKey);
+    del(delKeyId) {
+      Vue.$log.debug(delKeyId);
       var changes = {};
-      //changes.sshPublicKeys = this.sshPublicKeys;
       changes.sshPublicCerts = this.sshPublicCerts.filter(
-        key => key.key !== delKey
+        key => key.keyid === delKeyId
       );
       var host = {};
       host.id = this.host.cn;
@@ -261,16 +266,13 @@ export default {
       Vue.$log.debug(renew);
 
       var key = {};
-      key.keyid = Math.max(...this.host.sshPublicCerts.map(d => d.keyid)) + 1;
-      key.keytype = 1;
+      //key.keyid = Math.max(...this.host.sshPublicCerts.map(d => d.keyid)) + 1;
       key.name = hostkey.name;
       key.key = hostkey.key;
       key.fingerprint = hostkey.fingerprint;
-      key.dateExpire = dateExpire;
-      key.principal = hostkey.principal;
       var sshCerts_arr = [];
 
-      sshCerts_arr = this.host.sshPublicCerts;
+      //sshCerts_arr = this.host.sshPublicCerts;
 
       sshCerts_arr.push(key);
       var sshKeys = {};

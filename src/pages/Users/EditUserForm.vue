@@ -73,21 +73,18 @@
             ></md-input>
           </md-field>
         </div>
-        <div class="md-layout-item md-size-100">
-          <label>Groups</label>
-          <md-field>
-            <multiselect
-              :value="memberOfs"
-              @input="handleChange($event, 'memberOfs')"
-              :options="groups"
-              label="cn"
-              track-by="dn"
-              :multiple="true"
-              :searchable="true"
-              :hide-selected="true"
-              placeholder="Select Groups"
+        <div class="md-layout-item md-small-size-100 md-size-100">
+          <md-field :class="getValidationClass('principal')">
+            <md-chips
+              v-model="principal"
+              :disabled="sending"
+              :md-auto-insert="true"
+              md-placeholder="Principal"
+              @input="handleChange($event, 'principal')"
+            ></md-chips>
+            <span class="md-error" v-if="!$v.principal.required"
+              >Principal is required</span
             >
-            </multiselect>
           </md-field>
         </div>
         <div class="md-layout-item md-small-size-100 md-size-50">
@@ -119,6 +116,54 @@
             <span class="md-error" v-if="!$v.confirmPassword.sameAs"
               >Passwords must be same</span
             >
+          </md-field>
+        </div>
+        <div class="md-layout-item md-size-100">
+          <label>Groups</label>
+          <md-field>
+            <multiselect
+              :value="memberOfs"
+              @input="handleChange($event, 'memberOfs')"
+              :options="groups"
+              label="cn"
+              track-by="dn"
+              :multiple="true"
+              :searchable="true"
+              :hide-selected="true"
+              placeholder="Select Groups"
+            >
+            </multiselect>
+          </md-field>
+        </div>
+        <div class="md-layout-item md-size-50">
+          <md-field maxlength="5" :class="getValidationClass('duration')">
+            <label>Cert/Key Validity Duration</label>
+            <md-input
+              v-model="duration"
+              :disabled="sending"
+              @input="handleChange($event, 'duration')"
+            ></md-input>
+            <span class="md-error" v-if="!$v.duration.required"
+              >Duration is required</span
+            >
+            <span class="md-error" v-else-if="!$v.duration.between"
+              >Duration must be between 1 and 500</span
+            >
+          </md-field>
+        </div>
+        <div class="md-layout-item md-size-50">
+          <md-field>
+            <label for="durationUnit">Hours/Days/Weeks</label>
+            <md-select
+              v-model="durationUnit"
+              name="durationUnit"
+              id="DurationUnits"
+              @input="handleChange($event, 'durationUnit')"
+            >
+              <md-option value="Hours">Hours</md-option>
+              <md-option value="Days">Days</md-option>
+              <md-option value="Weeks">Weeks</md-option>
+            </md-select>
           </md-field>
         </div>
         <div class="md-layout-item md-small-size-100 md-size-50">
@@ -157,7 +202,8 @@ import {
   minLength,
   maxLength,
   email,
-  sameAs
+  sameAs,
+  between
 } from "vuelidate/lib/validators";
 import Multiselect from "vue-multiselect";
 
@@ -191,6 +237,9 @@ export default {
       mail: this.user.mail,
       memberOfs: this.user.memberOfs,
       accountLocked: this.user.accountLocked,
+      principal: [],
+      duration: this.user.duration,
+      durationUnit: this.user.durationUnit,
       sending: false
     };
   },
@@ -209,6 +258,13 @@ export default {
     },
     confirmPassword: {
       sameAsPassword: sameAs("userPassword")
+    },
+    principal: {
+      required
+    },
+    duration: {
+      required,
+      between: between(1, 500)
     }
   },
   computed: {
@@ -234,6 +290,18 @@ export default {
   },
   created() {
     this.$store.dispatch("alert/clear");
+    if (this.user.hasOwnProperty('principal')) {
+      this.principal = this.user.principal;
+    }
+    else {
+      this.principal = [];
+    }
+    if (this.user.hasOwnProperty('durationUnit')) {
+      this.durationUnit = this.user.durationUnit;
+    }
+    else {
+      this.durationUnit = 'Days';
+    }
   },
   methods: {
     getValidationClass(fieldName) {
@@ -268,6 +336,12 @@ export default {
       Vue.$log.debug("id: " + id);
       if (id === "memberOfs") {
         this.memberOfs = e;
+      }
+      if (id === "duration") {
+        this.changes["durationUnit"] = this.durationUnit;
+      }
+      if (id === "durationUnit") {
+        this.changes["duration"] = this.duration;
       }
       this.changes[id] = e;
     },

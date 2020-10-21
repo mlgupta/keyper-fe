@@ -26,6 +26,7 @@
               <md-tabs class="md-success" md-alignment="left">
                 <user-card :user="user" v-on:update-user="updateUser"></user-card>
                 <edit-user-form-keys data-background-color="green" :user="user" v-on:update-user="updateUser"> </edit-user-form-keys>
+                <edit-user-form-certs data-background-color="green" :user="user" v-on:update-user="updateUser"> </edit-user-form-certs>
               </md-tabs>
             </template>
           </nav-tabs-card>
@@ -39,6 +40,7 @@
 <script>
 import { UserCard } from "@/pages";
 import { EditUserFormKeys } from "@/pages";
+import { EditUserFormCerts } from "@/pages";
 import { NavTabsCard } from "@/components";
 import Vue from "vue";
 
@@ -46,7 +48,8 @@ export default {
   components: {
     NavTabsCard,
     UserCard,
-    EditUserFormKeys
+    EditUserFormKeys,
+    EditUserFormCerts
   },
   props: {
     cardUserImage: {

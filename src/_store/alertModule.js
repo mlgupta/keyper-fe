@@ -33,16 +33,24 @@ export const alert = {
     },
     mutations: {
         success(state, message) {
-            state.type = 'success';
-            state.message = message;
+            Vue.$log.debug("Alert Success: " + message);
+            
+            //state.type = 'success';
+            Vue.set(state, 'type', 'success');
+            //state.message = message;
+            Vue.set(state, 'message', message);
         },
         error(state, message) {
-            state.type = 'danger';
-            state.message = message;
+            Vue.set(state, 'type', 'danger');
+            //state.type = 'danger';
+            //state.message = message;
+            Vue.set(state, 'message', message);
         },
         clear(state, message) {
-            state.type = null;
-            state.message = null;
+            Vue.set(state, 'type', null);
+            //state.type = null;
+            //state.message = null;
+            Vue.set(state, 'message', null);
         },
     }
 }

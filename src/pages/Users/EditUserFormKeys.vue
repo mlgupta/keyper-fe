@@ -18,18 +18,21 @@
         <add-user-key-modal
           :hosts="memberOfs"
           :user="user"
+          :modalError="modalError"
           class="text-right"
         ></add-user-key-modal>
       </div>
       <div v-if="hasKeys">
         <md-table v-model="sshPublicKeys">
           <md-table-row>
+            <md-table-head>ID</md-table-head>
             <md-table-head>Name</md-table-head>
             <md-table-head>Key Fingerprint</md-table-head>
             <md-table-head>Expiration</md-table-head>
             <md-table-head>Hosts</md-table-head>
           </md-table-row>
-          <md-table-row v-for="item in sshPublicKeys" :key="item.name">
+          <md-table-row v-for="item in sshPublicKeys" :key="item.keyid">
+            <md-table-cell md-label="Name">{{ item.keyid }}</md-table-cell>
             <md-table-cell md-label="Name">{{ item.name }}</md-table-cell>
             <md-table-cell>
               <v-clamp autoresize :max-lines="1">{{
@@ -63,6 +66,7 @@
           <add-user-key-modal
             :hosts="memberOfs"
             :user="user"
+            :modalError="modalError"
             class="text-right"
           >
           </add-user-key-modal>
@@ -105,7 +109,8 @@ export default {
       changes: {},
       memberOfs: this.user.memberOfs,
       accountLocked: this.user.accountLocked,
-      sending: false
+      sending: false,
+      modalError: false
     };
   },
   validations: {
@@ -150,6 +155,12 @@ export default {
       if (this.alert.type == null) {
         Vue.$log.debug("Nothing in alert");
       } else {
+        if (this.alert.type == "danger") {
+          modalError = true;
+        }
+        else {
+          modalError = false;
+        }
         this.notifyVue(this.alert.type, this.alert.message);
         this.$store.dispatch("alert/clear");
       }
@@ -159,19 +170,6 @@ export default {
     this.$store.dispatch("alert/clear");
   },
   methods: {
-    getValidationClass(fieldName) {
-      Vue.$log.debug("Enter");
-      Vue.$log.debug("fieldName: " + fieldName);
-
-      const field = this.$v[fieldName];
-      Vue.$log.debug("field: " + JSON.stringify(field));
-
-      if (field) {
-        return {
-          "md-invalid": field.$invalid && field.$dirty
-        };
-      }
-    },
     displayHosts: function(hosts) {
       var displayHost = hosts
         .map(val => val.split(",")[0].split("=")[1])
@@ -186,32 +184,6 @@ export default {
       var displayDate = month + "/" + day + "/" + year;
       return displayDate;
     },
-    handleChange(e, id) {
-      Vue.$log.debug("event: " + e);
-      Vue.$log.debug("id: " + id);
-      if (id === "memberOfs") {
-        this.memberOfs = e;
-      }
-      this.changes[id] = e;
-    },
-    update() {
-      Vue.$log.debug("Enter");
-      Vue.$log.debug("Changes: " + JSON.stringify(this.changes));
-
-      this.$v.$touch();
-
-      if (this.$v.$invalid) {
-        Vue.$log.debug("Validation Errors");
-      } else {
-        if (JSON.stringify(this.changes) == JSON.stringify({})) {
-          Vue.$log.debug("No changes. Ignore click");
-        } else {
-          this.sending = true;
-          this.$emit("update-user", this.changes);
-          this.sending = false;
-        }
-      }
-    },
     notifyVue(type, msg) {
       Vue.$log.debug("Enter");
       this.$notify({
@@ -223,11 +195,9 @@ export default {
     },
     del(delKeyId) {
       Vue.$log.debug(delKeyId);
-      //this.sshPublicKeys = this.sshPublicKeys.filter(key => key.key !== delKey);
       var changes = {};
-      //changes.sshPublicKeys = this.sshPublicKeys;
       changes.sshPublicKeys = this.sshPublicKeys.filter(
-        key => key.keyid !== delKeyId
+        key => key.keyid === delKeyId
       );
       var user = {};
       user.id = this.user.cn;

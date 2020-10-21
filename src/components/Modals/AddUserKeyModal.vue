@@ -12,7 +12,7 @@
 -->
 <template>
   <div>
-    <md-dialog :md-active.sync="showDialog">
+    <md-dialog :md-active.sync="showDialog" @md-opened="opened">
       <md-dialog-title class="md-success">Add Key</md-dialog-title>
       <md-dialog-content>
         <div>
@@ -44,19 +44,6 @@
                 >
                 <span class="md-error" v-else-if="!$v.userkey.key.validKey"
                   >Invalid Key</span
-                >
-              </md-field>
-              <md-field maxlength="5" :class="getValidationClass('duration')">
-                <label>Valid For (days)</label>
-                <md-input
-                  v-model="userkey.duration"
-                  :disabled="sending"
-                ></md-input>
-                <span class="md-error" v-if="!$v.userkey.duration.required"
-                  >Duration is required</span
-                >
-                <span class="md-error" v-else-if="!$v.userkey.duration.between"
-                  >Duration must be between 30 and 360 days</span
                 >
               </md-field>
               <md-field>
@@ -137,6 +124,9 @@ export default {
     },
     user: {
       type: Object
+    },
+    modalError: {
+      type: Boolean
     }
   },
   data() {
@@ -144,7 +134,6 @@ export default {
       showDialog: false,
       userkey: {
         key: null,
-        duration: null,
         hostGroups: [],
         fingerprint: null,
         name: null
@@ -163,10 +152,6 @@ export default {
         required,
         validKey
       },
-      duration: {
-        required,
-        between: between(20, 360)
-      }
     }
   },
   computed: {
@@ -188,7 +173,6 @@ export default {
         if (this.alert.type == "success") {
           this.userkey.name = null;
           this.userkey.key = null;
-          this.userkey.duration = null;
           this.userkey.hostGroups = [];
         }
         this.notifyVue(this.alert.type, this.alert.message);
@@ -212,6 +196,18 @@ export default {
         return {
           "md-invalid": field.$invalid && field.$dirty
         };
+      }
+    },
+    opened() {
+      Vue.$log.debug("Enter");
+
+      if (!this.modalError) {
+          this.userkey.name = null;
+          this.userkey.key = null;
+          this.userkey.hostGroups = [];
+      }
+      else {
+        Vue.$log.debug("Old Modal Error. Leaving the form asis");
       }
     },
     fingerprint() {
@@ -239,22 +235,14 @@ export default {
       if (this.$v.$invalid) {
         Vue.$log.debug("Validation Errors");
       } else {
-        var now = new Date();
-        now.setDate(now.getDate() + parseInt(this.userkey.duration));
-        var dateExpire = now
-          .toISOString()
-          .slice(0, 10)
-          .replace(/-/g, "");
         var hosts = this.userkey.hostGroups.map(val => val.dn);
         var key = {};
-        key.keyid = 0;
-        key.keytype = 0;
         key.name = this.userkey.name;
         key.key = this.userkey.key;
         key.fingerprint = this.userkey.fingerprint;
         key.hostGroups = hosts;
-        key.dateExpire = dateExpire;
         var sshKeys_arr = [];
+        /*
         if (this.user.hasOwnProperty("sshPublicKeys")) {
           if (this.user.sshPublicKeys.length > 0) {
             sshKeys_arr = this.user.sshPublicKeys;
@@ -262,6 +250,7 @@ export default {
               Math.max(...this.user.sshPublicKeys.map(d => d.keyid)) + 1;
           }
         }
+        */
         sshKeys_arr.push(key);
         var sshKeys = {};
         sshKeys.sshPublicKeys = sshKeys_arr;

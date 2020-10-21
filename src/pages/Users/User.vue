@@ -22,6 +22,7 @@
                   <md-tabs class="md-success" md-alignment="left">
                     <edit-user-form data-background-color="green" :user="user" :groups="groups" :hosts="hosts" v-on:update-user="updateUser"> </edit-user-form>
                     <edit-user-form-keys data-background-color="green" :user="user" v-on:update-user="updateUser"> </edit-user-form-keys>
+                    <edit-user-form-certs data-background-color="green" :user="user" v-on:update-user="updateUser"> </edit-user-form-certs>
                   </md-tabs>
               </template>
             </nav-tabs-card>
@@ -35,6 +36,7 @@
 <script>
 import { EditUserForm } from "@/pages";
 import { EditUserFormKeys } from "@/pages";
+import { EditUserFormCerts } from "@/pages";
 import { NavTabsCard } from "@/components";
 import Vue from "vue";
 
@@ -42,7 +44,8 @@ export default {
   components: {
     NavTabsCard,
     EditUserForm,
-    EditUserFormKeys
+    EditUserFormKeys,
+    EditUserFormCerts
   },
   computed: {
     user() {

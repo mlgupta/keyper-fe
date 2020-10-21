@@ -46,6 +46,15 @@
             <md-input :value="user.displayName" type="text" @input="handleChange($event, 'displayName')"></md-input>
           </md-field>
         </div>
+        <div class="md-layout-item md-small-size-100 md-size-100">
+          <md-field>
+            <md-chips
+              :value="user.principal"
+              :disabled="sending"
+              md-static
+            ></md-chips>
+          </md-field>
+        </div>
         <div class="md-layout-item md-small-size-100 md-size-50">
           <md-field :class="getValidationClass('userPassword')">
             <label>Password</label>
@@ -59,6 +68,30 @@
             <label>Confirm Password</label>
             <md-input v-model="confirmPassword" @input="handleChange($event, 'confirmPassword')" type="password" :disabled="sending"></md-input>
             <span class="md-error" v-if="!$v.confirmPassword.sameAs">Passwords must be same</span>
+          </md-field>
+        </div>
+        <div class="md-layout-item md-size-50">
+          <md-field maxlength="5">
+            <label>Cert/Key Validity Duration</label>
+            <md-input
+              :value="user.duration"
+              disabled
+            ></md-input>
+          </md-field>
+        </div>
+        <div class="md-layout-item md-size-50">
+          <md-field>
+            <label for="durationUnit">Hours/Days/Weeks</label>
+            <md-select
+              :value="user.durationUnit"
+              name="durationUnit"
+              id="DurationUnits"
+              disabled
+            >
+              <md-option value="Hours">Hours</md-option>
+              <md-option value="Days">Days</md-option>
+              <md-option value="Weeks">Weeks</md-option>
+            </md-select>
           </md-field>
         </div>
         <div class="md-layout-item md-size-100 text-right">

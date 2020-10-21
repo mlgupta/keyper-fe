@@ -18,6 +18,7 @@ import UsersTable from "./Tables/UsersTable.vue";
 import HostsTable from "./Tables/HostsTable.vue";
 import GroupsTable from "./Tables/GroupsTable.vue";
 import AddUserKeyModal from "./Modals/AddUserKeyModal";
+import AddUserCertModal from "./Modals/AddUserCertModal";
 import AddHostKeyModal from "./Modals/AddHostKeyModal";
 import Modal from "./Modals/Modal";
 
@@ -27,6 +28,7 @@ export {
   HostsTable,
   GroupsTable,
   AddUserKeyModal,
+  AddUserCertModal,
   AddHostKeyModal,
   Modal
 };

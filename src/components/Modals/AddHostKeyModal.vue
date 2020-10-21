@@ -12,7 +12,7 @@
 -->
 <template>
   <div>
-    <md-dialog :md-active.sync="showDialog">
+    <md-dialog :md-active.sync="showDialog" @md-opened="opened">
       <md-dialog-title class="md-success">Add Key</md-dialog-title>
       <md-dialog-content>
         <div>
@@ -44,29 +44,6 @@
                 >
                 <span class="md-error" v-else-if="!$v.hostkey.key.validKey"
                   >Invalid Key</span
-                >
-              </md-field>
-              <md-field maxlength="5" :class="getValidationClass('duration')">
-                <label>Valid For (days)</label>
-                <md-input
-                  v-model="hostkey.duration"
-                  :disabled="sending"
-                ></md-input>
-                <span class="md-error" v-if="!$v.hostkey.duration.required"
-                  >Duration is required</span
-                >
-                <span class="md-error" v-else-if="!$v.hostkey.duration.between"
-                  >Duration must be between 30 and 360 days</span
-                >
-              </md-field>
-              <md-field :class="getValidationClass('principal')">
-                <label>Principal</label>
-                <md-chips
-                  v-model="hostkey.principal"
-                  :disabled="sending"
-                ></md-chips>
-                <span class="md-error" v-if="!$v.hostkey.principal.required"
-                  >Principal is required</span
                 >
               </md-field>
             </div>
@@ -128,6 +105,9 @@ export default {
   props: {
     host: {
       type: Object
+    },
+    modalError: {
+      type: Boolean
     }
   },
   data() {
@@ -135,10 +115,8 @@ export default {
       showDialog: false,
       hostkey: {
         key: null,
-        duration: null,
         fingerprint: null,
         name: null,
-        principal: [this.host.cn]
       },
       sending: false
     };
@@ -154,13 +132,6 @@ export default {
         required,
         validKey
       },
-      duration: {
-        required,
-        between: between(20, 360)
-      },
-      principal: {
-        required
-      }
     }
   },
   computed: {
@@ -173,7 +144,7 @@ export default {
   },
   watch: {
     alertMsg(newAlert) {
-      Vue.$log.debug("Enter in Addhostkey");
+      Vue.$log.debug("Enter in AddHostKeyModal");
       Vue.$log.debug("Alert Type: " + this.alert.type);
 
       if (this.alert.type == null) {
@@ -182,7 +153,6 @@ export default {
         if (this.alert.type == "success") {
           this.hostkey.name = null;
           this.hostkey.key = null;
-          this.hostkey.duration = null;
         }
         this.notifyVue(this.alert.type, this.alert.message);
         this.$store.dispatch("alert/clear");
@@ -205,6 +175,17 @@ export default {
         return {
           "md-invalid": field.$invalid && field.$dirty
         };
+      }
+    },
+    opened() {
+      Vue.$log.debug("Enter");
+
+      if (!this.modalError) {
+          this.hostkey.name = null;
+          this.hostkey.key = null;
+      }
+      else {
+        Vue.$log.debug("Old Modal Error. Leaving the form asis");
       }
     },
     fingerprint() {
@@ -232,22 +213,13 @@ export default {
       if (this.$v.$invalid) {
         Vue.$log.debug("Validation Errors");
       } else {
-        var now = new Date();
-        now.setDate(now.getDate() + parseInt(this.hostkey.duration));
-        var dateExpire = now
-          .toISOString()
-          .slice(0, 10)
-          .replace(/-/g, "");
         var key = {};
-        key.keyid = 100;
-        key.keytype = 1;
         key.name = this.hostkey.name;
         key.key = this.hostkey.key;
         key.fingerprint = this.hostkey.fingerprint;
-        key.dateExpire = dateExpire;
-        key.principal = this.hostkey.principal.map(s => s.trim()).join();
         var sshCerts_arr = [];
 
+        /*
         if (this.host.hasOwnProperty("sshPublicCerts")) {
           if (this.host.sshPublicCerts.length > 0) {
             sshCerts_arr = this.host.sshPublicCerts;
@@ -255,6 +227,7 @@ export default {
               Math.max(...this.host.sshPublicCerts.map(d => d.keyid)) + 1;
           }
         }
+        */
         sshCerts_arr.push(key);
         var sshKeys = {};
         sshKeys.sshPublicCerts = sshCerts_arr;

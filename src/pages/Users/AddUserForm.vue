@@ -23,7 +23,7 @@
           <div class="md-layout-item md-small-size-100 md-size-50">
             <md-field :class="getValidationClass('cn')">
               <label>User Name</label>
-              <md-input v-model="user.cn" :disabled="sending"></md-input>
+              <md-input v-model="user.cn" @blur="principal()" :disabled="sending"></md-input>
               <span class="md-error" v-if="!$v.user.cn.required">Username is required</span>
               <span class="md-error" v-else-if="!$v.user.cn.minlength">Invalid Username</span>
             </md-field>
@@ -56,6 +56,19 @@
               <md-input v-model="user.displayName" :value="displayName" type="text" :disabled="sending"></md-input>
             </md-field>
           </div>
+          <div class="md-layout-item md-small-size-100 md-size-100">
+            <md-field :class="getValidationClass('principal')">
+              <md-chips
+                v-model="user.principal"
+                :disabled="sending"
+                :md-auto-insert="true"
+                md-placeholder="Principal"
+              ></md-chips>
+              <span class="md-error" v-if="!$v.user.principal.required"
+                >Principal is required</span
+              >
+            </md-field>
+          </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
             <md-field :class="getValidationClass('userPassword')">
               <label>Password</label>
@@ -79,6 +92,31 @@
                 </multiselect>
             </md-field>
           </div>
+          <div class="md-layout-item md-size-50">
+            <md-field maxlength="5" :class="getValidationClass('duration')">
+              <label>Cert/Key Validity Duration</label>
+              <md-input
+                v-model="user.duration"
+                :disabled="sending"
+              ></md-input>
+              <span class="md-error" v-if="!$v.user.duration.required"
+                >Duration is required</span
+              >
+              <span class="md-error" v-else-if="!$v.user.duration.between"
+                >Duration must be between 1 and 500</span
+              >
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-50">
+            <md-field>
+              <label for="durationUnit">Hours/Days/Weeks</label>
+              <md-select v-model="user.durationUnit" name="durationUnit" id="DurationUnits">
+                <md-option value="Hours">Hours</md-option>
+                <md-option value="Days">Days</md-option>
+                <md-option value="Weeks">Weeks</md-option>
+              </md-select>
+            </md-field>
+          </div>
           <div class="md-layout-item md-size-100 text-right">
             <md-button type="submit" class="md-raised md-success" :disabled="sending">Add</md-button>
           </div>
@@ -90,7 +128,7 @@
 <script>
 import Vue from "vue";
 import { validationMixin } from "vuelidate";
-import { required, minLength, maxLength, email, sameAs } from "vuelidate/lib/validators";
+import { required, minLength, maxLength, email, sameAs, between } from "vuelidate/lib/validators";
 import Multiselect from "vue-multiselect";
 
 export default {
@@ -116,10 +154,13 @@ export default {
         givenName: null,
         sn: null,
         displayName: null,
+        principal: [],
         userPassword: null,
         confirmPassword: null,
         memberOfs: [],
-        sshPublicKeys: []
+        sshPublicKeys: [],
+        duration: null,
+        durationUnit: 'Days'
       },
       sending: false
     };
@@ -147,7 +188,14 @@ export default {
         required,
         minLength: minLength(3),
         sameAsPassword: sameAs("userPassword")
-      }
+      },
+      principal: {
+        required
+      },
+      duration: {
+        required,
+        between: between(1, 500)
+      },
     }
   },
   computed: {
@@ -174,6 +222,9 @@ export default {
           this.user.sn = null;
           this.user.displayName = null;
           this.user.userPassword = null;
+          this.user.principal = [];
+          this.user.duration = null;
+          this.user.durationUnit = 'Days';
         }
         this.notifyVue(this.alert.type, this.alert.message);
         this.$store.dispatch("alert/clear");
@@ -203,6 +254,10 @@ export default {
       var ln = this.user.sn === null ? "" : this.user.sn;
       this.user.displayName = fn + " " + ln;
     },
+    principal() {
+      var princ = this.user.cn === null ? "" : this.user.cn;
+      this.user.principal = [princ,];
+    },
     add() {
       Vue.$log.debug("Enter");
 
@@ -225,8 +280,12 @@ export default {
         verticalAlign: "top",
         type: type
       });
-    }
+    },
   }
 };
 </script>
-<style></style>
+<style>
+.md-field .md-chips {
+  display: contents;
+}
+</style>

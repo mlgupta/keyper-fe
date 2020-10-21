@@ -12,7 +12,7 @@
   <md-dialog :md-active.sync="active">
     <md-dialog-title>{{ title }}</md-dialog-title>
       <md-dialog-content>
-        <div class="wordwrap">
+        <div class="wordwrap tim-note">
               <p>{{ body }}</p>
         </div>
       </md-dialog-content>

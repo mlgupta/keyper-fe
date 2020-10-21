@@ -12,24 +12,28 @@
 -->
 <template>
   <!-- User Certs -->
-  <md-tab id="tab-keys" md-label="SSH Certs">
+  <md-tab id="tab-certs" md-label="SSH Certs">
     <div class="md-layout-item md-size-100">
       <div class="md-layout-item md-size 100">
         <add-user-cert-modal
+          :hosts="memberOfs"
           :user="user"
+          :modalError="modalError"
           class="text-right"
         ></add-user-cert-modal>
       </div>
       <div v-if="hasKeys">
         <md-table v-model="sshPublicCerts">
           <md-table-row>
+            <md-table-head>ID</md-table-head>
             <md-table-head>Name</md-table-head>
             <md-table-head>Fingerprint</md-table-head>
             <md-table-head>Expiration</md-table-head>
-            <md-table-head>Principal</md-table-head>
-            <md-table-head>Options</md-table-head>
+            <md-table-head>Hosts</md-table-head>
+            <md-table-head>Option</md-table-head>
           </md-table-row>
-          <md-table-row v-for="item in sshPublicCerts" :key="item.id">
+          <md-table-row v-for="item in sshPublicCerts" :key="item.keyid">
+            <md-table-cell md-label="Name">{{ item.keyid }}</md-table-cell>
             <md-table-cell md-label="Name">{{ item.name }}</md-table-cell>
             <md-table-cell>
               <v-clamp autoresize :max-lines="1">{{
@@ -39,9 +43,9 @@
             <md-table-cell md-label="Expiration">{{
               dateExpire(item.dateExpire)
             }}</md-table-cell>
-            <md-table-cell v-if="item.hasOwnProperty('principal')" md-label="Principal">
-              {{ item.principal.replace(/,/g, ', ') }}
-            </md-table-cell>
+            <md-table-cell md-label="Hosts">{{
+              displayHosts(item.hostGroups)
+            }}</md-table-cell>
             <md-table-cell>
               <md-button
                 class="md-just-icon md-simple"
@@ -74,7 +78,7 @@
               -->
               <md-button
                 class="md-just-icon md-simple md-danger"
-                @click="del(item.key)"
+                @click="del(item.keyid)"
               >
                 <md-icon>close</md-icon>
                 <md-tooltip md-direction="top">Delete Key</md-tooltip>
@@ -90,7 +94,9 @@
           md-description="Add public key for the user."
         >
           <add-user-cert-modal
+            :hosts="memberOfs"
             :user="user"
+            :modalError="modalError"
             class="text-right"
           >
           </add-user-cert-modal>
@@ -111,14 +117,14 @@ import {
   sameAs
 } from "vuelidate/lib/validators";
 import VClamp from "vue-clamp";
-import { AdduserCertModal } from "@/components";
+import { AddUserCertModal } from "@/components";
 import { Modal } from "@/components";
 
 export default {
   name: "edit-user-form-certs",
   components: {
     VClamp,
-    AdduserCertModal,
+    AddUserCertModal,
     Modal
   },
   mixins: [validationMixin],
@@ -135,10 +141,11 @@ export default {
     return {
       cert: null,
       changes: {},
-      memberOfs: {},
+      memberOfs: this.user.memberOfs,
       showDialog: false,
       canCopy: false,
-      sending: false
+      sending: false,
+      modalError: false
     };
   },
   validations: {
@@ -174,6 +181,12 @@ export default {
       if (this.alert.type == null) {
         Vue.$log.debug("Nothing in alert");
       } else {
+        if (this.alert.type == "danger") {
+          modalError = true;
+        }
+        else {
+          modalError = false;
+        }
         this.notifyVue(this.alert.type, this.alert.message);
         this.$store.dispatch("alert/clear");
       }
@@ -187,18 +200,11 @@ export default {
     async copy(cert) {
       await navigator.clipboard.writeText(cert);
     },
-    getValidationClass(fieldName) {
-      Vue.$log.debug("Enter");
-      Vue.$log.debug("fieldName: " + fieldName);
-
-      const field = this.$v[fieldName];
-      Vue.$log.debug("field: " + JSON.stringify(field));
-
-      if (field) {
-        return {
-          "md-invalid": field.$invalid && field.$dirty
-        };
-      }
+    displayHosts: function(hosts) {
+      var displayHost = hosts
+        .map(val => val.split(",")[0].split("=")[1])
+        .join(", ");
+      return displayHost;
     },
     dateExpire: function(date) {
       Vue.$log.debug(date);
@@ -207,14 +213,6 @@ export default {
       var day = date.substring(6, 8);
       var displayDate = month + "/" + day + "/" + year;
       return displayDate;
-    },
-    handleChange(e, id) {
-      Vue.$log.debug("event: " + e);
-      Vue.$log.debug("id: " + id);
-      if (id === "memberOfs") {
-        this.memberOfs = e;
-      }
-      this.changes[id] = e;
     },
     notifyVue(type, msg) {
       Vue.$log.debug("Enter");
@@ -225,32 +223,34 @@ export default {
         type: type
       });
     },
-    del(delKey) {
-      Vue.$log.debug(delKey);
+    del(delKeyId) {
+      Vue.$log.debug(delKeyId);
       var changes = {};
       changes.sshPublicCerts = this.sshPublicCerts.filter(
-        key => key.key !== delKey
+        key => key.keyid === delKeyId
       );
       var user = {};
       user.id = this.user.cn;
       user.cn = this.user.cn;
       user.changes = changes;
-      this.$store.dispatch("userStore/updateuser", { user });
+      this.$store.dispatch("userStore/updateUser", { user });
+
+      if (this.user.cn == this.$store.state.authentication.user.cn) {
+        this.$store.dispatch("authentication/updateUser", { user });
+      }
     },
     renew(userkey) {
       Vue.$log.debug(renew);
 
       var key = {};
-      key.keyid = Math.max(...this.user.sshPublicCerts.map(d => d.keyid)) + 1;
-      key.keytype = 1;
+      //key.keyid = Math.max(...this.user.sshPublicCerts.map(d => d.keyid)) + 1;
       key.name = userkey.name;
       key.key = userkey.key;
       key.fingerprint = userkey.fingerprint;
-      key.dateExpire = dateExpire;
-      key.principal = userkey.principal;
+      key.hostGroups = userkey.hostGroups;
       var sshCerts_arr = [];
 
-      sshCerts_arr = this.user.sshPublicCerts;
+      //sshCerts_arr = this.user.sshPublicCerts;
 
       sshCerts_arr.push(key);
       var sshKeys = {};
@@ -260,7 +260,7 @@ export default {
       user.id = this.user.cn;
       user.changes = sshKeys;
 
-      this.$store.dispatch("userStore/updateuser", { user });
+      this.$store.dispatch("userStore/updateUser", { user });
     },
     download(cert) {
       Vue.$log.debug("Enter");

@@ -23,7 +23,7 @@
           <div class="md-layout-item md-size-100">
             <md-field :class="getValidationClass('cn')">
               <label>Name</label>
-              <md-input v-model="host.cn" :disabled="sending"></md-input>
+              <md-input v-model="host.cn" @blur="principal()" :disabled="sending"></md-input>
               <span class="md-error" v-if="!$v.host.cn.required">Host name is required</span>
               <span class="md-error" v-else-if="!$v.host.cn.minlength">Invalid Host Name</span>
             </md-field>
@@ -37,6 +37,47 @@
               <span class="md-error" v-else-if="!$v.host.description.maxlength">Invalid Description</span>
             </md-field>
           </div>
+          <div class="md-layout-item md-small-size-100 md-size-100">
+            <md-field :class="getValidationClass('principal')">
+              <!--
+              <label>Principal</label>
+              -->
+              <md-chips
+                v-model="host.principal"
+                :disabled="sending"
+                :md-auto-insert="true"
+                md-placeholder="Principal"
+              ></md-chips>
+              <span class="md-error" v-if="!$v.host.principal.required"
+                >Principal is required</span
+              >
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-50">
+            <md-field maxlength="5" :class="getValidationClass('duration')">
+              <label>Cert Validity Duration</label>
+              <md-input
+                v-model="host.duration"
+                :disabled="sending"
+              ></md-input>
+              <span class="md-error" v-if="!$v.host.duration.required"
+                >Duration is required</span
+              >
+              <span class="md-error" v-else-if="!$v.host.duration.between"
+                >Duration must be between 1 and 500</span
+              >
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-50">
+            <md-field>
+              <label for="durationUnit">Hours/Days/Weeks</label>
+              <md-select v-model="host.durationUnit" name="durationUnit" id="DurationUnits">
+                <md-option value="Hours">Hours</md-option>
+                <md-option value="Days">Days</md-option>
+                <md-option value="Weeks">Weeks</md-option>
+              </md-select>
+            </md-field>
+          </div>
           <div class="md-layout-item md-size-100 text-right">
             <md-button type="submit" class="md-raised md-success" :disabled="sending">Add</md-button>
           </div>
@@ -48,7 +89,7 @@
 <script>
 import Vue from "vue";
 import { validationMixin } from "vuelidate";
-import { required, minLength, maxLength } from "vuelidate/lib/validators";
+import { required, minLength, maxLength, between } from "vuelidate/lib/validators";
 
 export default {
   name: "add-host-form",
@@ -66,7 +107,10 @@ export default {
     return {
       host: {
         cn: null,
-        description: null
+        description: null,
+        principal: [],
+        duration: null,
+        durationUnit: 'Days'
       },
 
       sending: false
@@ -82,7 +126,14 @@ export default {
         required,
         minLength: minLength(3),
         maxLength: maxLength(1000)
-      }
+      },
+      principal: {
+        required
+      },
+      duration: {
+        required,
+        between: between(1, 500)
+      },
     }
   },
   computed: {
@@ -104,6 +155,9 @@ export default {
         if (this.alert.type == "success") {
           this.host.cn = null;
           this.host.description = null;
+          this.host.principal = [];
+          this.host.duration = null;
+          this.host.durationUnit = 'Days'
         }
         this.notifyVue(this.alert.type, this.alert.message);
         this.$store.dispatch("alert/clear");
@@ -127,6 +181,10 @@ export default {
           "md-invalid": field.$invalid && field.$dirty
         };
       }
+    },
+    principal() {
+      var princ = this.host.cn === null ? "" : this.host.cn;
+      this.host.principal = [princ,];
     },
     add() {
       Vue.$log.debug("Enter");
