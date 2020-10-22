@@ -89,9 +89,9 @@
       </div>
       <div v-else>
         <md-empty-state
-          md-icon="vpn_key"
+          md-icon="verified_user"
           md-label="Add Key"
-          md-description="Add public key for the user."
+          md-description="Add public key to generate a certificate for the user."
         >
           <add-user-cert-modal
             :hosts="memberOfs"
