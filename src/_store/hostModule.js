@@ -36,7 +36,7 @@ export const hostStore = {
                     },
                     error => {
                         commit('getHostsFailure', error)
-                        dispatch('alert/danger', "Error getting Host List", { root: true });
+                        dispatch('alert/error', "Error getting Host List", { root: true });
                     }
                 );
         },
@@ -50,7 +50,7 @@ export const hostStore = {
                     },
                     error => {
                         commit('updateHostFailure', error)
-                        dispatch('alert/danger', "Update Host Error", { root: true });
+                        dispatch('alert/error', "Update Host Error", { root: true });
                     }
                 );
         },
@@ -65,7 +65,7 @@ export const hostStore = {
                     },
                     error => {
                         commit('deleteHostFailure', error)
-                        dispatch('alert/danger', "Delete Host Error", { root: true });
+                        dispatch('alert/error', "Delete Host Error", { root: true });
                     }
 
                 );
@@ -82,7 +82,7 @@ export const hostStore = {
                     },
                     error => {
                         commit('createHostFailure', error);
-                        dispatch('alert/danger', "Add Host Error", { root: true });
+                        dispatch('alert/error', "Add Host Error", { root: true });
                     }
 
                 );

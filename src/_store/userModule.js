@@ -36,7 +36,7 @@ export const userStore = {
                     },
                     error => {
                         commit('getUsersFailure', error)
-                        dispatch('alert/danger', "Error getting User List", { root: true });
+                        dispatch('alert/error', "Error getting User List", { root: true });
                     }
                 );
         },
@@ -48,7 +48,7 @@ export const userStore = {
                     user => commit('getUserSuccess', user),
                     error => {
                         commit('getUserFailure', error)
-                        dispatch('alert/danger', "Error getting User", { root: true });
+                        dispatch('alert/error', "Error getting User", { root: true });
                     }
                 );
         },
@@ -62,8 +62,9 @@ export const userStore = {
                         dispatch('alert/success', "User Saved", { root: true });
                     },
                     error => {
+                        Vue.$log.error("Update User Error: " + JSON.stringify(error));
                         commit('updateUserFailure', error)
-                        dispatch('alert/danger', "Update User Error", { root: true });
+                        dispatch('alert/error', "Update User Error: " + JSON.stringify(error), { root: true });
                     }
                 );
         },
@@ -78,7 +79,7 @@ export const userStore = {
                     },
                     error => {
                         commit('deleteUserFailure', error)
-                        dispatch('alert/danger', "Delete User Error", { root: true });
+                        dispatch('alert/error', "Delete User Error", { root: true });
                     }
 
                 );
@@ -95,7 +96,7 @@ export const userStore = {
                     },
                     error => {
                         commit('createUserFailure', error);
-                        dispatch('alert/danger', "Add User Error", { root: true });
+                        dispatch('alert/error', "Add User Error", { root: true });
                     }
 
                 );

@@ -36,7 +36,7 @@ export const groupStore = {
                     },
                     error => {
                         commit('getGroupsFailure', error)
-                        dispatch('alert/danger', "Error getting Group List", { root: true });
+                        dispatch('alert/error', "Error getting Group List", { root: true });
                     }
                 );
         },
@@ -50,7 +50,7 @@ export const groupStore = {
                     },
                     error => {
                         commit('updateGroupFailure', error)
-                        dispatch('alert/danger', "Update Group Error", { root: true });
+                        dispatch('alert/error', "Update Group Error", { root: true });
                     }
                 );
         },
@@ -65,7 +65,7 @@ export const groupStore = {
                     },
                     error => {
                         commit('deleteGroupFailure', error)
-                        dispatch('alert/danger', "Delete Group Error", { root: true });
+                        dispatch('alert/error', "Delete Group Error", { root: true });
                     }
 
                 );
@@ -82,7 +82,7 @@ export const groupStore = {
                     },
                     error => {
                         commit('createGroupFailure', error);
-                        dispatch('alert/danger', "Add Group Error", { root: true });
+                        dispatch('alert/error', "Add Group Error", { root: true });
                     }
 
                 );
