@@ -30,7 +30,7 @@ $ git clone https://github.com/dbsentry/keyper-fe.git
 $ cd keyper-fe
 $ npm install
 ```
-3. Start using ```npm```
+3. To run in dev mode:
 ```console
 $ npm run dev
 ```
