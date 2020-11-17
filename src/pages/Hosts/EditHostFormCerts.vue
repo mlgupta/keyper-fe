@@ -212,7 +212,8 @@ export default {
       var year = date.substring(0, 4);
       var month = date.substring(4, 6);
       var day = date.substring(6, 8);
-      var displayDate = month + "/" + day + "/" + year;
+      //var displayDate = month + "/" + day + "/" + year;
+      var displayDate = year + "/" + month + "/" + day;
       return displayDate;
     },
     handleChange(e, id) {
