@@ -51,6 +51,7 @@
             </md-field>
           </div>
           <div class="md-layout-item md-size-100 text-right">
+            <md-button class="md-raised md-default" v-on:click="cancel">Cancel</md-button>
             <md-button type="submit" class="md-raised md-success" :disabled="sending">Add</md-button>
           </div>
         </div>
@@ -159,6 +160,10 @@ export default {
         this.$emit("add-group", this.group);
         this.sending = false;
       }
+    },
+    cancel() {
+      Vue.$log.debug("Enter");
+      this.$emit("cancel-add-group");
     },
     notifyVue(type, msg) {
       Vue.$log.debug("Enter");

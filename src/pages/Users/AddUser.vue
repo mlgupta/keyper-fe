@@ -14,7 +14,7 @@
   <div class="content">
     <div class="md-layout">
       <div class="md-layout-item md-medium-size-100 md-size-100">
-        <add-user-form data-background-color="green" v-on:add-user="addUser" :groups="groups"></add-user-form>
+        <add-user-form data-background-color="green" v-on:add-user="addUser" v-on:cancel-add-user="cancelAddUser" :groups="groups"></add-user-form>
       </div>
     </div>
   </div>
@@ -50,6 +50,10 @@ export default {
       }
       this.$store.dispatch("userStore/addUser", { user });
       this.$router.push("/admin/users");
+    },
+    cancelAddUser() {
+      Vue.$log.debug("Enter");
+      this.$router.push({ name: 'Users' });
     }
   }
 };

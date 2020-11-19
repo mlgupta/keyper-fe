@@ -14,7 +14,7 @@
   <div class="content">
     <div class="md-layout">
       <div class="md-layout-item md-medium-size-100 md-size-100">
-        <add-host-form data-background-color="green" v-on:add-host="addHost" :users="users" > </add-host-form>
+        <add-host-form data-background-color="green" v-on:add-host="addHost" v-on:cancel-add-host="cancelAddHost" :users="users" > </add-host-form>
       </div>
     </div>
   </div>
@@ -57,6 +57,10 @@ export default {
         this.$store.dispatch('hostStore/addHost', { host } );
         this.$router.push({ name: "Hosts" });
     },
+    cancelAddHost() {
+      Vue.$log.debug("Enter");
+      this.$router.push({ name: "Hosts" });
+    }
   }
 };
 </script>

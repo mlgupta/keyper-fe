@@ -47,6 +47,11 @@
               </md-field>
           </div>                   
           <div class="md-layout-item md-size-100 text-right">
+            <md-button
+              class="md-raised md-default"
+              v-on:click="cancel"
+              >cancel</md-button
+            >
             <md-button class="md-raised md-success" @click="update">Update</md-button>
           </div>
         </div>
@@ -140,6 +145,10 @@ export default {
       else {
         this.$emit('update-group', this.changes);
       }
+    },
+    cancel() {
+      Vue.$log.debug("Enter");
+      this.$emit("cancel-update-group");
     },
     notifyVue(type, msg) {
       Vue.$log.debug("Enter");

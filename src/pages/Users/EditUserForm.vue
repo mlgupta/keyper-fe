@@ -183,6 +183,11 @@
         </div>
         <div class="md-layout-item md-size-100 text-right">
           <md-button
+            class="md-raised md-default"
+            v-on:click="cancel"
+            >cancel</md-button
+          >
+          <md-button
             type="submit"
             class="md-raised md-success"
             :disabled="sending"
@@ -362,6 +367,10 @@ export default {
           this.sending = false;
         }
       }
+    },
+    cancel() {
+      Vue.$log.debug("Enter");
+      this.$emit("cancel-update-user");
     },
     notifyVue(type, msg) {
       Vue.$log.debug("Enter");

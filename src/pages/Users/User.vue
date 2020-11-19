@@ -20,7 +20,7 @@
               <template slot="content">
                 <span class="md-nav-tabs-title">Edit:</span>
                   <md-tabs class="md-success" md-alignment="left">
-                    <edit-user-form data-background-color="green" :user="user" :groups="groups" :hosts="hosts" v-on:update-user="updateUser"> </edit-user-form>
+                    <edit-user-form data-background-color="green" :user="user" :groups="groups" :hosts="hosts" v-on:update-user="updateUser" v-on:cancel-update-user="cancelUpdateUser"> </edit-user-form>
                     <edit-user-form-keys data-background-color="green" :user="user" v-on:update-user="updateUser"> </edit-user-form-keys>
                     <edit-user-form-certs data-background-color="green" :user="user" v-on:update-user="updateUser"> </edit-user-form-certs>
                   </md-tabs>
@@ -112,6 +112,10 @@ export default {
       this.$store.dispatch("userStore/updateUser", { user });
       Vue.nextTick();
       //this.$router.push("/admin/users");
+    },
+    cancelUpdateUser() {
+      Vue.$log.debug("Enter");
+      this.$router.push({ name: 'Users' });
     }
   }
 };

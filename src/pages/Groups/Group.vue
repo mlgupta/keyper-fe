@@ -14,7 +14,7 @@
   <div class="content">
     <div class="md-layout">
       <div class="md-layout-item md-medium-size-100 md-size-100">
-        <edit-group-form data-background-color="green" :group="group" :users="users" :hosts="hosts" v-on:update-group="updateGroup"> </edit-group-form>
+        <edit-group-form data-background-color="green" :group="group" :users="users" :hosts="hosts" v-on:update-group="updateGroup" v-on:cancel-update-group="cancelUpdateGroup"> </edit-group-form>
       </div>
       
     </div>
@@ -126,6 +126,10 @@ export default {
         group.changes = changes;
         this.$store.dispatch('groupStore/updateGroup', { group } );
         this.$router.push("/admin/groups");
+    },
+    cancelUpdateGroup() {
+      Vue.$log.debug("Enter");
+      this.$router.push({ name: 'Groups' });
     }
   }
 };

@@ -20,7 +20,7 @@
               <template slot="content">
                 <span class="md-nav-tabs-title">Edit:</span>
                 <md-tabs class="md-success" md-alignment="left">
-                  <edit-host-form data-background-color="green" :host="host" :users="users" v-on:update-host="updateHost"> </edit-host-form>
+                  <edit-host-form data-background-color="green" :host="host" :users="users" v-on:update-host="updateHost" v-on:cancel-update-host="cancelUpdateHost"> </edit-host-form>
                   <edit-host-form-certs data-background-color="green" :host="host" v-on:update-host="updateHost"> </edit-host-form-certs>
                 </md-tabs>
               </template>
@@ -97,6 +97,10 @@ export default {
         host.changes = changes;
         this.$store.dispatch('hostStore/updateHost', { host } );
         this.$router.push("/admin/hosts");
+    },
+    cancelUpdateHost() {
+      Vue.$log.debug("Enter");
+      this.$router.push({ name: 'Hosts' });
     }
   }
 };

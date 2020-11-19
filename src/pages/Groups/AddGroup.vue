@@ -14,7 +14,7 @@
   <div class="content">
     <div class="md-layout">
       <div class="md-layout-item md-medium-size-100 md-size-100">
-        <add-group-form data-background-color="green" v-on:add-group="addGroup" :users="users" :hosts="hosts"> </add-group-form>
+        <add-group-form data-background-color="green" v-on:add-group="addGroup" v-on:cancel-add-group="cancelAddGroup" :users="users" :hosts="hosts"> </add-group-form>
       </div>
       
     </div>
@@ -75,6 +75,10 @@ export default {
         this.$store.dispatch('groupStore/addGroup', { group } );
         this.$router.push("/admin/groups");
     },
+    cancelAddGroup() {
+      Vue.$log.debug("Enter");
+      this.$router.push({ name: "Groups" });
+    }
   }
 };
 </script>
