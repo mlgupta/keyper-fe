@@ -6,12 +6,15 @@
 ![CodeQL](https://github.com/dbsentry/keyper/workflows/CodeQL/badge.svg)  
 ![Keyper Architecture](https://keyper.dbsentry.com/media/keyper.png)  
 
-Keyper is an SSH Key Based Authentication Manager. It standardizes and centralizes the storage of SSH public keys for all Linux users in your organization saving significant time and effort it takes to manage SSH public keys on each Linux Server. Keyper is a lightweight container taking less than 100MB. It is launched either using Docker or Podman. You can be up and running within minutes instead of days.
+Keyper is an SSH Key/Certificate Authentication Manager. It standardizes and centralizes the storage of SSH public keys and SSH Public Certificates for all Linux users within your organization saving significant time and effort it takes to manage SSH public keys and certificates. Keyper is a lightweight container taking less than 100MB. It is launched either using Docker or Podman. You can be up and running within minutes instead of days.
 
 Features include:
 - Public key storage
-- Public Key Expiration
+- SSH CA
+- Certificate signing and storage
+- Public Key/Certificate Expiration
 - Forced Key rotation
+- Key Revocation List (KRL)
 - Streamlined provision or de-provisioning of users
 - Segmentation of Servers using groups
 - Policy definition to restrict user's access to server(s)
@@ -39,6 +42,7 @@ Refer to the [administration guide](https://keyper.dbsentry.com/docs/) for furth
 ## Related Projects
 - [keyper-docker](https://github.com/dbsentry/keyper-docker)
 - [keyper](https://github.com/dbsentry/keyper)
+- [Keyper-docs](https://github.com/dbsentry/keyper-docs)
 
 ## License
 All assets and code are under the GNU GPL LICENSE and in the public domain unless specified otherwise.
