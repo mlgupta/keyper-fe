@@ -37,7 +37,7 @@ export function getUserClaims(jwt) {
 
     if ("user_claims" in data) {
         role = data["user_claims"].split(":")[1];
-        role = role.replace("}","").trim();
+        role = role.replaceAll("}","").trim();
     }
     Vue.$log.debug("role: " + role);
 
